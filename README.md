@@ -9,7 +9,7 @@ Traditional artisans often face difficulties when selling products online becaus
 
 **SIH26090 – AI Artisan Marketplace** simplifies this process using **Flutter and AI**.
 
-An artisan can:
+An artisan can
 
 1. 📷 Take a photo of the product.
 2. 🎙️ Describe the product using their voice.
