@@ -1,0 +1,4277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArtisanAI - Production-Ready Artisan Commerce Platform</title>
+ 
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<!-- Fonts: Fraunces for craft/handmade character, Inter for clean UI legibility -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ 
+<style>
+/* ================= LANGUAGE SELECTOR ================= */
+.lang-selector{
+    position:fixed;
+    top:18px; right:18px;
+    z-index:800;
+    display:flex;
+    gap:8px;
+}
+.lang-btn{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1.5px solid var(--border);
+    background:var(--card);
+    color:var(--muted);
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+.lang-btn.active{
+    background:var(--primary);
+    color:#fff;
+    border-color:var(--primary);
+}
+.lang-btn:hover{
+    border-color:var(--primary);
+}
+@media (max-width:576px){
+    .lang-selector{
+        top:12px;
+        right:12px;
+    }
+    .lang-btn{
+        width:36px;
+        height:36px;
+        font-size:10px;
+    }
+}
+
+/* ================= STATUS CONFIRMATIONS ================= */
+.status-indicator{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 12px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:600;
+}
+.status-success{
+    background:var(--success-light);
+    color:var(--success);
+}
+.status-info{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+
+:root{
+    --primary:#8B5A2B;
+    --primary-dark:#5C3A1B;
+    --primary-light:#F3E4D2;
+    --secondary:#C1694A;
+    --secondary-light:#F1DACB;
+    --cream:#FBF4E9;
+    --card:#FFFFFF;
+    --text:#2E2117;
+    --muted:#8A7A6C;
+    --border:#EAD9C4;
+    --success:#5B7B4F;
+    --success-light:#E4EDDD;
+    --warning:#B7862E;
+    --warning-light:#F6E9CE;
+    --danger:#B5473A;
+    --danger-light:#F5DEDA;
+    --radius-lg:22px;
+    --radius-md:16px;
+    --radius-sm:10px;
+    --shadow-sm:0 2px 10px rgba(46,33,23,.06);
+    --shadow-md:0 10px 28px rgba(46,33,23,.10);
+}
+ 
+*{ -webkit-tap-highlight-color: transparent; }
+ 
+.icon{
+    width:1em;
+    height:1em;
+    display:inline-block;
+    vertical-align:-0.15em;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    flex-shrink:0;
+}
+ 
+html{ height:100%; scroll-padding-bottom:90px; }
+body{ min-height:100%; }
+ 
+body{
+    background:var(--cream);
+    color:var(--text);
+    font-family:'Inter', Arial, sans-serif;
+    padding-bottom:110px;
+    -webkit-font-smoothing:antialiased;
+}
+ 
+h1,h2,h3,h4,h5,h6{ font-family:'Fraunces', Georgia, serif; color:var(--text); letter-spacing:-0.01em; }
+ 
+p{ line-height:1.55; }
+ 
+a{ color:var(--primary); }
+ 
+::selection{ background:var(--secondary-light); }
+ 
+:focus-visible{
+    outline:2.5px solid var(--secondary);
+    outline-offset:2px;
+    border-radius:6px;
+}
+ 
+.page{ display:none; animation:fadeIn .25s ease; }
+.page.active{ display:block; }
+ 
+@keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+ 
+@media (prefers-reduced-motion: reduce){
+    .page{ animation:none; }
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+}
+ 
+/* ================= NAVBAR ================= */
+ 
+.app-navbar{
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    position:sticky;
+    top:0;
+    z-index:900;
+}
+ 
+.logo{
+    font-family:'Fraunces', serif;
+    font-size:23px;
+    font-weight:700;
+    color:var(--primary);
+}
+ 
+.nav-title{
+    font-weight:600;
+    font-size:17px;
+    color:var(--text);
+}
+ 
+.icon-btn{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--primary);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    transition:.15s;
+}
+.icon-btn:hover{ background:var(--primary-light); }
+ 
+/* ================= CONTAINER RHYTHM ================= */
+ 
+.app-container{ max-width:600px; margin:0 auto; padding:20px 18px 28px; }
+ 
+.section-label{
+    font-size:13px;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:none;
+    margin:26px 0 12px;
+}
+.section-label:first-child{ margin-top:0; }
+ 
+/* ================= HERO ================= */
+ 
+.hero{
+    background:linear-gradient(150deg, var(--primary), #A9713F 65%, var(--secondary));
+    color:#FFF9F0;
+    border-radius:var(--radius-lg);
+    padding:26px 24px;
+    position:relative;
+    overflow:hidden;
+}
+.hero::after{
+    content:"";
+    position:absolute;
+    right:-40px; top:-40px;
+    width:160px; height:160px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+}
+.hero h3{ color:#fff; font-weight:600; margin-bottom:6px; }
+.hero p{ color:rgba(255,249,240,0.88); font-size:15px; }
+.hero .btn-light{
+    background:#fff;
+    color:var(--primary-dark);
+    font-weight:600;
+    border-radius:14px;
+    padding:11px 18px;
+    border:none;
+}
+ 
+/* ================= STAT PILLS ================= */
+ 
+.stat-row{ display:flex; gap:10px; margin-top:16px; }
+.stat-pill{
+    flex:1;
+    background:rgba(255,255,255,0.14);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:14px;
+    padding:10px 8px;
+    text-align:center;
+}
+.stat-pill .num{ font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#fff; display:block; }
+.stat-pill .lbl{ font-size:11.5px; color:rgba(255,249,240,0.85); }
+ 
+/* ================= CARDS ================= */
+ 
+.feature-card{
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    background:var(--card);
+    box-shadow:var(--shadow-sm);
+    transition:.18s ease;
+}
+.feature-card:hover{ box-shadow:var(--shadow-md); transform:translateY(-2px); }
+ 
+.quick-action{
+    cursor:pointer;
+    text-align:center;
+    padding:20px 10px;
+    min-height:104px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+.quick-action .qa-icon{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+}
+
+.quick-action .qa-icon .icon{
+    width:24px;
+    height:24px;
+    display:inline-block;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.quick-action h6{ margin:0; font-family:'Inter'; font-weight:600; font-size:13.5px; color:var(--text); }
+ 
+.qa-add{ background:var(--primary-light); color:var(--primary); }
+.qa-products{ background:var(--success-light); color:var(--success); }
+.qa-orders{ background:var(--warning-light); color:var(--warning); }
+.qa-profile{ background:var(--secondary-light); color:var(--secondary); }
+ 
+/* ================= BUTTONS ================= */
+ 
+.btn{ font-weight:600; border-radius:14px; padding:11px 18px; font-size:15px; }
+.btn-lg{ padding:14px 20px; font-size:16px; border-radius:16px; }
+ 
+.btn-primary{ background:var(--primary); border-color:var(--primary); }
+.btn-primary:hover,.btn-primary:focus{ background:var(--primary-dark); border-color:var(--primary-dark); }
+ 
+.btn-success{ background:var(--success); border-color:var(--success); }
+.btn-success:hover{ background:#48633e; border-color:#48633e; }
+ 
+.btn-outline-primary{ color:var(--primary); border-color:var(--primary); }
+.btn-outline-primary:hover{ background:var(--primary); border-color:var(--primary); }
+ 
+.btn-outline-danger{ color:var(--danger); border-color:var(--danger); }
+.btn-outline-danger:hover{ background:var(--danger); border-color:var(--danger); }
+ 
+.btn-outline-secondary{ color:var(--text); border-color:var(--border); }
+.btn-outline-secondary:hover{ background:var(--primary-light); border-color:var(--border); color:var(--text); }
+ 
+.btn:disabled, .btn.loading{ opacity:.75; pointer-events:none; }
+ 
+/* ================= STEP TRACK ================= */
+ 
+.step-track{
+    display:flex;
+    align-items:center;
+    padding:16px 18px 4px;
+    max-width:600px;
+    margin:0 auto;
+    gap:4px;
+}
+.step-track .step{
+    flex:1;
+    text-align:center;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--muted);
+    position:relative;
+    padding-top:16px;
+}
+.step-track .step::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:4px;
+    border-radius:4px;
+    background:var(--border);
+}
+.step-track .step.done::before{ background:var(--success); }
+.step-track .step.active::before{ background:var(--primary); }
+.step-track .step.active{ color:var(--primary); }
+.step-track .step.done{ color:var(--success); }
+ 
+/* ================= BOTTOM NAV ================= */
+ 
+.bottom-nav{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    background:var(--card);
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-around;
+    padding:8px 0 10px;
+    z-index:1000;
+    box-shadow:0 -6px 20px rgba(46,33,23,0.06);
+}
+.bottom-nav button{
+    border:none;
+    background:transparent;
+    color:#9C8E80;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    font-size:11.5px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:12px;
+    transition:.15s;
+}
+.bottom-nav button i{ font-size:20px; }
+.bottom-nav button.active-nav{ color:var(--primary); background:var(--primary-light); }
+ 
+/* ================= UPLOAD / PHOTO ================= */
+ 
+.product-image-box{
+    min-height:230px;
+    border:2px dashed #C7A87E;
+    border-radius:var(--radius-lg);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    gap:6px;
+    background:#FFFDFA;
+    cursor:pointer;
+    text-align:center;
+    padding:20px;
+    transition:.15s;
+}
+.product-image-box:hover{ background:var(--primary-light); border-color:var(--primary); }
+.product-image-box i{ color:var(--primary); }
+ 
+#imagePreview{
+    width:100%;
+    max-height:260px;
+    object-fit:cover;
+    border-radius:var(--radius-md);
+    display:none;
+}
+ 
+.upload-choice{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+}
+.upload-choice .btn{ flex:1; }
+ 
+.photo-actions{
+    display:none;
+    gap:10px;
+    margin-top:12px;
+}
+.photo-actions.show{ display:flex; }
+.photo-actions .btn{ flex:1; }
+ 
+/* ================= VOICE ================= */
+ 
+.mic-wrap{
+    position:relative;
+    width:150px; height:150px;
+    display:flex; align-items:center; justify-content:center;
+    margin:14px auto;
+}
+.mic-ring{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:2px solid var(--secondary-light);
+    opacity:0;
+}
+.mic-button{
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    border:none;
+    background:var(--primary);
+    color:white;
+    font-size:32px;
+    box-shadow:0 8px 22px rgba(139,90,43,0.35);
+    position:relative;
+    z-index:2;
+    transition:.15s;
+}
+.mic-button:active{ transform:scale(.96); }
+.mic-button.recording{ background:var(--danger); box-shadow:0 8px 22px rgba(181,71,58,0.35); }
+ 
+.mic-wrap.recording .mic-ring{
+    animation:micPulse 1.8s ease-out infinite;
+}
+.mic-wrap.recording .mic-ring:nth-child(2){ animation-delay:.6s; }
+.mic-wrap.recording .mic-ring:nth-child(3){ animation-delay:1.2s; }
+ 
+@keyframes micPulse{
+    0%{ opacity:.55; transform:scale(.7); border-color:var(--danger); }
+    100%{ opacity:0; transform:scale(1.35); border-color:var(--danger); }
+}
+ 
+.voice-timer{
+    font-family:'Fraunces', serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--muted);
+    letter-spacing:.02em;
+}
+ 
+.transcript-box{ text-align:left; }
+.transcript-actions{ display:flex; gap:10px; margin-top:14px; }
+.transcript-actions .btn{ flex:1; }
+ 
+/* ================= AI RESULTS ================= */
+ 
+.ai-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-left:5px solid var(--primary);
+    border-radius:var(--radius-md);
+    padding:16px;
+}
+.ai-card h6{ font-family:'Inter'; font-weight:600; font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.ai-card p{ margin:0; font-size:15px; }
+ 
+.confidence-track{
+    height:8px; background:var(--border); border-radius:6px; overflow:hidden; margin-top:8px;
+}
+.confidence-fill{ height:100%; background:var(--success); border-radius:6px; }
+ 
+/* ================= SMART PRICING ================= */
+ 
+.price-box{
+    background:linear-gradient(150deg, var(--primary-light), #F7ECDD);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:28px 22px;
+    text-align:center;
+}
+.price-box small{ color:var(--muted); font-weight:600; letter-spacing:.02em; }
+.price-box h1{ color:var(--primary-dark); margin:6px 0; font-weight:700; }
+ 
+.factor-row{ display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+.factor-row:last-child{ border-bottom:none; }
+.factor-icon{
+    width:38px; height:38px; border-radius:11px;
+    background:var(--primary-light); color:var(--primary);
+    display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
+}
+.factor-row .factor-text{ flex:1; }
+.factor-row .factor-text strong{ display:block; font-size:14px; }
+.factor-row .factor-text span{ font-size:12.5px; color:var(--muted); }
+ 
+/* ================= PRODUCTS ================= */
+ 
+.product-card{ padding:14px; }
+.product-card .thumb{
+    height:84px; width:84px; border-radius:14px; object-fit:cover; flex-shrink:0; background:var(--primary-light);
+}
+.product-card .thumb-placeholder{
+    height:84px; width:84px; border-radius:14px; background:var(--primary-light); color:var(--primary);
+    display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0;
+}
+ 
+.status-chip{
+    font-size:11.5px;
+    font-weight:700;
+    padding:4px 11px;
+    border-radius:20px;
+    display:inline-block;
+}
+.status-published{ background:var(--success-light); color:var(--success); }
+.status-draft{ background:var(--warning-light); color:var(--warning); }
+.status-outofstock{ background:var(--danger-light); color:var(--danger); }
+ 
+/* ================= ORDERS ================= */
+ 
+.order-status{
+    font-size:12px;
+    font-weight:700;
+    padding:5px 12px;
+    border-radius:20px;
+}
+.order-pending{ background:var(--warning-light); color:var(--warning); }
+.order-confirmed{ background:var(--secondary-light); color:var(--secondary); }
+.order-shipped{ background:#DCE7F3; color:#3D5C82; }
+.order-delivered{ background:var(--success-light); color:var(--success); }
+ 
+/* ================= PROFILE ================= */
+ 
+.profile-avatar{
+    width:96px; height:96px;
+    border-radius:50%;
+    background:linear-gradient(150deg, var(--primary), var(--secondary));
+    color:white;
+    display:flex; justify-content:center; align-items:center;
+    font-family:'Fraunces', serif;
+    font-size:38px;
+    font-weight:600;
+    margin:auto;
+    box-shadow:var(--shadow-md);
+}
+ 
+.profile-stats{ display:flex; gap:10px; margin:18px 0; }
+.profile-stats .stat{
+    flex:1; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:14px 8px; text-align:center;
+}
+.profile-stats .stat .num{ font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--primary); }
+.profile-stats .stat .lbl{ font-size:11.5px; color:var(--muted); }
+ 
+/* ================= AUTH ================= */
+ 
+.login-container{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px 18px; }
+ 
+.auth-card{
+    width:100%; max-width:440px;
+    border:1px solid var(--border);
+    border-radius:26px;
+    padding:30px 26px;
+    background:var(--card);
+}
+.auth-card h4{ font-weight:600; margin-bottom:4px; }
+.auth-card .text-muted{ font-size:14px; }
+ 
+.password-field{ position:relative; }
+.password-toggle{
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    background:none; border:none; color:var(--muted); font-size:16px; padding:4px;
+}
+ 
+/* ================= FORMS ================= */
+ 
+label{ font-size:13.5px; font-weight:600; color:var(--text); margin-bottom:6px; display:block; }
+ 
+.form-control, .form-select{
+    border-color:var(--border);
+    border-radius:12px;
+    padding:11px 14px;
+    font-size:15px;
+    background:#FFFDFB;
+}
+.form-control:focus, .form-select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(139,90,43,0.13);
+    background:#fff;
+}
+.input-group-text{ background:var(--primary-light); border-color:var(--border); color:var(--primary-dark); font-weight:600; border-radius:12px 0 0 12px; }
+.input-group .form-control{ border-radius:0 12px 12px 0; }
+ 
+textarea.form-control{ resize:vertical; }
+ 
+.char-count{ font-size:11.5px; color:var(--muted); text-align:right; margin-top:4px; }
+ 
+/* ================= EMPTY STATES ================= */
+ 
+.empty-state{
+    text-align:center;
+    padding:34px 20px;
+    border:1.5px dashed var(--border);
+    border-radius:var(--radius-md);
+    background:#FFFDFA;
+}
+.empty-state i{ font-size:34px; color:var(--secondary); margin-bottom:10px; display:block; }
+.empty-state h6{ margin-bottom:4px; }
+.empty-state p{ color:var(--muted); font-size:13.5px; margin-bottom:14px; }
+ 
+/* ================= LOADING OVERLAY ================= */
+ 
+.loading-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(251,244,233,0.92);
+    z-index:2000;
+    align-items:center; justify-content:center; flex-direction:column; gap:16px;
+    text-align:center; padding:30px;
+}
+.loading-overlay.show{ display:flex; }
+.loading-spinner{
+    width:52px; height:52px;
+    border:4px solid var(--border);
+    border-top-color:var(--primary);
+    border-radius:50%;
+    animation:spin 0.8s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.loading-overlay p{ font-weight:600; color:var(--text); font-family:'Fraunces', serif; font-size:16px; }
+ 
+/* ================= TOAST ================= */
+ 
+.toast-success{
+    position:fixed;
+    top:16px; left:50%; transform:translate(-50%,-140%);
+    background:var(--success);
+    color:#fff;
+    padding:12px 22px;
+    border-radius:14px;
+    font-weight:600;
+    font-size:14px;
+    box-shadow:var(--shadow-md);
+    z-index:2100;
+    transition:transform .3s ease;
+    display:flex; align-items:center; gap:8px;
+}
+.toast-success.show{ transform:translate(-50%,0); }
+ 
+/* ================= RESPONSIVE ================= */
+ 
+@media (min-width:576px){
+    .app-container{ padding:24px 24px 32px; }
+}
+ 
+@media (min-width:768px){
+    body{ background:linear-gradient(180deg, var(--cream), #F4E9D8); }
+    .app-container{ max-width:640px; }
+    .login-container{ background:transparent; }
+}
+ 
+@media (max-width:359px){
+    .app-container{ padding:16px 14px 24px; }
+    .hero{ padding:20px 16px; }
+    .mic-wrap{ width:130px; height:130px; }
+    .mic-button{ width:76px; height:76px; font-size:28px; }
+}
+/* ================= HOME LANDSCAPE DASHBOARD ================= */
+
+.home-dashboard{
+    min-height:calc(100vh - 150px);
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:22px;
+    padding:22px 28px 24px;
+    max-width:1200px;
+    margin:0 auto;
+}
+
+.home-left,
+.home-right{
+    min-width:0;
+}
+
+.home-left{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.home-right{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.home-hero{
+    min-height:280px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.home-panel{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:18px;
+    box-shadow:var(--shadow-sm);
+}
+
+.home-panel-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--muted);
+    margin-bottom:12px;
+}
+
+.quick-panel{
+    flex:1;
+}
+
+.quick-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.quick-action{
+    min-height:105px;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+}
+
+.quick-action h6{
+    margin:8px 0 0;
+}
+
+.recent-panel{
+    flex:1;
+}
+
+.recent-box{
+    height:calc(100% - 30px);
+    min-height:190px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.recent-box .empty-state{
+    width:100%;
+    padding:18px;
+}
+
+.ai-box{
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.home-tip{
+    background:var(--primary-light);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:16px;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.home-tip-icon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    background:var(--card);
+    color:var(--primary);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.home-tip strong{
+    display:block;
+    margin-bottom:3px;
+}
+
+.home-tip p{
+    margin:0;
+    font-size:13px;
+    color:var(--muted);
+}
+
+
+/* TABLET / MOBILE */
+
+@media (max-width:767px){
+
+    .home-dashboard{
+        grid-template-columns:1fr;
+        padding:16px;
+        gap:16px;
+    }
+
+    .home-hero{
+        min-height:auto;
+    }
+
+    .home-right{
+        gap:16px;
+    }
+
+}
+
+
+/* LARGE LANDSCAPE SCREENS */
+
+@media (min-width:768px) and (min-height:650px){
+
+    .home-dashboard{
+        height:calc(100vh - 150px);
+        min-height:500px;
+    }
+
+    .home-left,
+    .home-right{
+        height:100%;
+    }
+
+}
+</style>
+</head>
+ 
+<body>
+<!-- ================= LANGUAGE SELECTOR ================= -->
+<div class="lang-selector" id="langSelector">
+    <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')" title="English">EN</button>
+    <button class="lang-btn" data-lang="ta" onclick="setLanguage('ta')" title="Tamil">தமிழ்</button>
+    <button class="lang-btn" data-lang="hi" onclick="setLanguage('hi')" title="Hindi">हिन्दी</button>
+</div>
+<!-- ================= LOADING OVERLAY (reusable) ================= -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p id="loadingMessage">Working on it...</p>
+</div>
+ 
+<!-- ================= TOAST (reusable) ================= -->
+<div id="appToast" class="toast-success">
+    <svg class="icon" aria-hidden="true"><use href="#i-check-circle-fill"></use></svg>
+    <span id="appToastText">Done!</span>
+</div>
+ 
+ 
+<!-- ================= LOGIN PAGE ================= -->
+ 
+<section id="loginPage" class="page active">
+    <div class="container login-container">
+        <div class="card auth-card shadow-sm">
+ 
+            <div class="text-center mb-4">
+                <h2 class="logo">ArtisanAI</h2>
+                <p class="text-muted">Create, price and sell your handmade products.</p>
+            </div>
+ 
+            <h4>Welcome back</h4>
+            <p class="text-muted mb-3">Log in to keep growing your craft business.</p>
+ 
+            <div class="card mb-3" style="background:var(--primary-light); border:none; border-radius:14px; padding:10px 14px;">
+                <p class="mb-0 small" style="color:var(--primary-dark);">
+                    <strong>New here?</strong> Tap "Register" below to create your own account — it only takes a minute.
+                </p>
+            </div>
+ 
+            <div>
+ 
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input id="loginEmail" type="email" class="form-control" placeholder="Enter your email">
+                </div>
+ 
+                <div class="mb-3">
+                    <label>Password</label>
+                    <div class="password-field">
+                        <input id="loginPassword" type="password" class="form-control" placeholder="Enter password" onkeydown="if(event.key==='Enter'){ loginUser(); }">
+                        <button type="button" class="password-toggle" aria-label="Show password" onclick="togglePasswordVisibility('loginPassword', this)">
+                            <svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg>
+                        </button>
+                    </div>
+                </div>
+ 
+                <p id="loginError" class="text-danger small mb-3" style="display:none;">Please enter your email and password to continue.</p>
+ 
+                <div class="text-end mb-3">
+                    <a href="#" class="small text-decoration-none">Forgot password?</a>
+                </div>
+ 
+                <button type="button" class="btn btn-primary btn-lg w-100" onclick="loginUser()">Login</button>
+ 
+            </div>
+ 
+            <p class="text-center mt-3 mb-0">
+                New artisan?
+                <button class="btn btn-link p-0" onclick="showPage('registerPage')">Register</button>
+            </p>
+ 
+        </div>
+    </div>
+</section>
+ 
+ 
+<!-- ================= REGISTER PAGE ================= -->
+ 
+<section id="registerPage" class="page">
+    <div class="container login-container">
+        <div class="card auth-card shadow-sm">
+ 
+            <button class="btn btn-sm btn-outline-secondary mb-3" onclick="showPage('loginPage')">
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg> Back
+            </button>
+ 
+            <h3>Create your artisan account</h3>
+            <p class="text-muted mb-3">Join the ArtisanAI marketplace and start selling in minutes.</p>
+ 
+            <div>
+ 
+                <div class="mb-3">
+                    <label>Full Name</label>
+                    <input id="registerName" type="text" class="form-control" placeholder="Your name">
+                </div>
+ 
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input id="registerEmail" type="email" class="form-control" placeholder="Your email">
+                </div>
+ 
+                <div class="mb-3">
+                    <label>Password</label>
+                    <div class="password-field">
+                        <input id="registerPassword" type="password" class="form-control" placeholder="Create password" onkeydown="if(event.key==='Enter'){ registerUser(); }">
+                        <button type="button" class="password-toggle" aria-label="Show password" onclick="togglePasswordVisibility('registerPassword', this)">
+                            <svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg>
+                        </button>
+                    </div>
+                </div>
+ 
+                <p id="registerError" class="text-danger small mb-3" style="display:none;">Please fill in all fields to continue.</p>
+ 
+                <button type="button" class="btn btn-primary btn-lg w-100" onclick="registerUser()">Create Account</button>
+ 
+            </div>
+ 
+        </div>
+    </div>
+</section>
+ 
+ 
+<!-- ================= HOME PAGE ================= -->
+ <!<!-- ================= HOME PAGE ================= -->
+
+<style>
+/* ================= LANGUAGE SELECTOR ================= */
+.lang-selector{
+    position:fixed;
+    top:18px; right:18px;
+    z-index:800;
+    display:flex;
+    gap:8px;
+}
+.lang-btn{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1.5px solid var(--border);
+    background:var(--card);
+    color:var(--muted);
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+.lang-btn.active{
+    background:var(--primary);
+    color:#fff;
+    border-color:var(--primary);
+}
+.lang-btn:hover{
+    border-color:var(--primary);
+}
+@media (max-width:576px){
+    .lang-selector{
+        top:12px;
+        right:12px;
+    }
+    .lang-btn{
+        width:36px;
+        height:36px;
+        font-size:10px;
+    }
+}
+
+/* ================= STATUS CONFIRMATIONS ================= */
+.status-indicator{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 12px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:600;
+}
+.status-success{
+    background:var(--success-light);
+    color:var(--success);
+}
+.status-info{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+
+/* ==========================================================
+   ARTISAN AI — HOME PAGE
+   Full landscape dashboard + responsive mobile layout
+   ========================================================== */
+
+#homePage {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ---------- Navbar ---------- */
+
+#homePage .app-navbar {
+    width: 100%;
+}
+
+
+/* ---------- Main Home Container ---------- */
+
+#homePage .home-container {
+    width: 100%;
+    max-width: none !important;
+    margin: 0;
+    padding: 24px 32px 45px;
+}
+
+
+/* ==========================================================
+   MAIN DASHBOARD
+   Left = Welcome
+   Right = Quick Actions
+   ========================================================== */
+
+#homePage .home-dashboard {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+    gap: 24px;
+
+    min-height: 450px;
+}
+
+
+/* ==========================================================
+   LEFT — WELCOME / BROWN PANEL
+   ========================================================== */
+
+#homePage .welcome-panel {
+    position: relative;
+
+    width: 100%;
+    min-height: 450px;
+
+    padding: 42px;
+
+    border-radius: 30px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #875126 0%,
+            #a96138 55%,
+            #bd694d 100%
+        );
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    box-shadow:
+        0 12px 35px rgba(80, 45, 20, 0.16);
+}
+
+
+/* Decorative circles */
+
+#homePage .welcome-panel::before {
+    content: "";
+
+    position: absolute;
+
+    width: 230px;
+    height: 230px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.07);
+
+    top: -70px;
+    right: -45px;
+}
+
+#homePage .welcome-panel::after {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.04);
+
+    bottom: -55px;
+    left: -35px;
+}
+
+
+/* Welcome text */
+
+#homePage .welcome-content {
+    position: relative;
+    z-index: 2;
+
+    max-width: 720px;
+}
+
+#homePage .welcome-content h2 {
+    margin: 0 0 18px;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: clamp(32px, 3.4vw, 52px);
+
+    line-height: 1.08;
+
+    font-weight: 700;
+
+    color: white;
+}
+
+#homePage .welcome-content p {
+    margin: 0 0 28px;
+
+    max-width: 650px;
+
+    font-size: clamp(16px, 1.4vw, 21px);
+
+    line-height: 1.55;
+
+    color: rgba(255,255,255,0.94);
+}
+
+
+/* Add Product Button */
+
+#homePage .welcome-add-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    width: fit-content;
+
+    padding: 15px 24px;
+
+    border: none;
+
+    border-radius: 17px;
+
+    background: white;
+
+    color: #4c2b17;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#homePage .welcome-add-btn:hover {
+    color: #4c2b17;
+
+    background: #fffaf4;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.12);
+}
+
+
+/* ==========================================================
+   STATISTICS
+   ========================================================== */
+
+#homePage .home-stats {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+
+    margin-top: 30px;
+}
+
+#homePage .home-stat-box {
+    min-height: 105px;
+
+    padding: 15px 10px;
+
+    border-radius: 19px;
+
+    border: 1px solid rgba(255,255,255,0.30);
+
+    background: rgba(255,255,255,0.10);
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+#homePage .home-stat-number {
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    color: white;
+}
+
+#homePage .home-stat-label {
+    margin-top: 8px;
+
+    font-size: 14px;
+
+    color: rgba(255,255,255,0.90);
+}
+
+
+/* ==========================================================
+   RIGHT — QUICK ACTIONS
+   ========================================================== */
+
+#homePage .quick-actions-panel {
+    width: 100%;
+
+    min-height: 450px;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+#homePage .quick-actions-title {
+    margin: 0 0 15px;
+
+    color: #725f50;
+
+    font-size: 22px;
+
+    font-weight: 600;
+}
+
+
+/* 2 x 2 cards */
+
+#homePage .quick-actions-grid {
+    width: 100%;
+
+    flex: 1;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+/* Action card */
+
+#homePage .home-action {
+    width: 100%;
+    height: 100%;
+
+    min-height: 205px;
+
+    padding: 25px;
+
+    border-radius: 25px;
+
+    background: white;
+
+    border: 1px solid #eadfd2;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#homePage .home-action:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 14px 30px rgba(80,50,30,0.12);
+}
+
+
+/* Action icon */
+
+#homePage .home-action-icon {
+    width: 72px;
+    height: 72px;
+
+    margin-bottom: 17px;
+
+    border-radius: 21px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 31px;
+}
+
+#homePage .home-action h5 {
+    margin: 0;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    color: #241b16;
+}
+
+
+/* Individual icon colors */
+
+#homePage .icon-add {
+    background: #f4e4d1;
+    color: #925a28;
+}
+
+#homePage .icon-products {
+    background: #e6efdf;
+    color: #62804f;
+}
+
+#homePage .icon-orders {
+    background: #eee4f3;
+    color: #80618f;
+}
+
+#homePage .icon-profile {
+    background: #f5e1df;
+    color: #a35d55;
+}
+
+
+/* ==========================================================
+   SLIDING SECTIONS
+   ========================================================== */
+
+#homePage .home-section {
+    width: 100%;
+
+    margin-top: 30px;
+}
+
+#homePage .home-section-heading {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 13px;
+}
+
+#homePage .home-section-heading h4 {
+    margin: 0;
+
+    color: #725f50;
+
+    font-size: 20px;
+
+    font-weight: 600;
+}
+
+#homePage .home-section-heading span {
+    color: #9b8b7d;
+
+    font-size: 12px;
+}
+
+
+/* Horizontal slider */
+
+#homePage .home-slider {
+    width: 100%;
+
+    display: flex;
+
+    gap: 16px;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    padding: 4px 3px 13px;
+
+    scroll-behavior: smooth;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+}
+
+#homePage .home-slider::-webkit-scrollbar {
+    height: 6px;
+}
+
+#homePage .home-slider::-webkit-scrollbar-thumb {
+    background: #c9b8a8;
+
+    border-radius: 10px;
+}
+
+
+/* Slider cards */
+
+#homePage .home-slide-card {
+    flex: 0 0 285px;
+
+    min-height: 145px;
+
+    padding: 20px;
+
+    border-radius: 21px;
+
+    background: white;
+
+    border: 1px solid #eadfd2;
+
+    cursor: default;
+}
+
+#homePage .home-slide-icon {
+    width: 47px;
+    height: 47px;
+
+    margin-bottom: 12px;
+
+    border-radius: 14px;
+
+    background: #f3e5d7;
+
+    color: #925a28;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+#homePage .home-slide-card h6 {
+    margin: 0 0 6px;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    color: #2a211b;
+}
+
+#homePage .home-slide-card p {
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+
+    color: #8d8177;
+}
+
+
+/* AI cards */
+
+#homePage .home-ai-card {
+    flex: 0 0 310px;
+
+    min-height: 145px;
+
+    padding: 20px;
+
+    border-radius: 21px;
+
+    border: 1px solid #eadfd2;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fffaf3,
+            #f5eee5
+        );
+}
+
+#homePage .home-ai-icon {
+    width: 47px;
+    height: 47px;
+
+    margin-bottom: 12px;
+
+    border-radius: 14px;
+
+    background: #eadccf;
+
+    color: #925a28;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+#homePage .home-ai-card h6 {
+    margin: 0 0 6px;
+
+    font-size: 16px;
+
+    font-weight: 600;
+}
+
+#homePage .home-ai-card p {
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+
+    color: #8d8177;
+}
+
+
+/* ==========================================================
+   LARGE LANDSCAPE
+   ========================================================== */
+
+@media (min-width: 1200px) {
+
+    #homePage .home-container {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    #homePage .home-dashboard {
+        gap: 28px;
+    }
+
+    #homePage .welcome-panel {
+        padding: 48px;
+    }
+
+}
+
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 900px) {
+
+    #homePage .home-container {
+        padding: 20px;
+    }
+
+    #homePage .home-dashboard {
+        grid-template-columns: 1fr;
+
+        min-height: auto;
+    }
+
+    #homePage .welcome-panel {
+        min-height: 420px;
+    }
+
+    #homePage .quick-actions-panel {
+        min-height: auto;
+    }
+
+    #homePage .home-action {
+        min-height: 175px;
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 576px) {
+
+    #homePage .home-container {
+        padding: 15px 12px 35px;
+    }
+
+    #homePage .welcome-panel {
+        min-height: 390px;
+
+        padding: 27px 20px;
+
+        border-radius: 24px;
+    }
+
+    #homePage .welcome-content h2 {
+        font-size: 30px;
+    }
+
+    #homePage .welcome-content p {
+        font-size: 16px;
+    }
+
+    #homePage .welcome-add-btn {
+        width: 100%;
+    }
+
+    #homePage .home-stats {
+        gap: 8px;
+    }
+
+    #homePage .home-stat-box {
+        min-height: 88px;
+
+        padding: 10px 5px;
+    }
+
+    #homePage .home-stat-number {
+        font-size: 23px;
+    }
+
+    #homePage .home-stat-label {
+        font-size: 12px;
+    }
+
+    #homePage .quick-actions-grid {
+        gap: 12px;
+    }
+
+    #homePage .home-action {
+        min-height: 145px;
+
+        padding: 15px 8px;
+
+        border-radius: 20px;
+    }
+
+    #homePage .home-action-icon {
+        width: 55px;
+        height: 55px;
+
+        margin-bottom: 10px;
+
+        font-size: 25px;
+
+        border-radius: 17px;
+    }
+
+    #homePage .home-action h5 {
+        font-size: 16px;
+    }
+
+    #homePage .home-slide-card {
+        flex-basis: 235px;
+    }
+
+    #homePage .home-ai-card {
+        flex-basis: 275px;
+    }
+
+}
+</style>
+
+
+<section id="homePage" class="page">
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="app-navbar">
+
+        <div class="logo">
+            ArtisanAI
+        </div>
+
+        <button
+            class="icon-btn"
+            onclick="showPage('profilePage')"
+            aria-label="Open profile">
+
+            <i class="bi bi-person"></i>
+
+        </button>
+
+    </nav>
+
+
+    <!-- ================= HOME CONTENT ================= -->
+
+    <div class="home-container">
+
+
+        <!-- ==================================================
+             MAIN DASHBOARD
+             ================================================== -->
+
+        <div class="home-dashboard">
+
+
+            <!-- ================= LEFT BROWN PANEL ================= -->
+
+            <div class="welcome-panel">
+
+                <div class="welcome-content">
+
+                    <h2 id="homeGreeting">
+                        Good morning, Artisan 👋
+                    </h2>
+
+                    <p>
+                        Let's turn your craftsmanship into
+                        your next great product.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="btn welcome-add-btn"
+                        onclick="showPage('addProductPage')">
+
+                        <i class="bi bi-plus-circle"></i>
+
+                        Add New Product
+
+                    </button>
+
+                </div>
+
+
+                <!-- ================= STATISTICS ================= -->
+
+                <div class="home-stats">
+
+                    <div class="home-stat-box">
+
+                        <span class="home-stat-number">
+                            0
+                        </span>
+
+                        <span class="home-stat-label">
+                            Products
+                        </span>
+
+                    </div>
+
+
+                    <div class="home-stat-box">
+
+                        <span class="home-stat-number">
+                            0
+                        </span>
+
+                        <span class="home-stat-label">
+                            Orders
+                        </span>
+
+                    </div>
+
+
+                    <div class="home-stat-box">
+
+                        <span class="home-stat-number">
+                            ₹0
+                        </span>
+
+                        <span class="home-stat-label">
+                            Earned
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= RIGHT QUICK ACTIONS ================= -->
+
+            <div class="quick-actions-panel">
+
+                <div class="quick-actions-title">
+                    Quick actions
+                </div>
+
+
+                <div class="quick-actions-grid">
+
+
+                    <!-- ADD PRODUCT -->
+
+                    <div
+                        class="home-action"
+                        onclick="showPage('addProductPage')">
+
+                        <div class="home-action-icon icon-add">
+
+                            <i class="bi bi-plus-circle"></i>
+
+                        </div>
+
+                        <h5>
+                            Add Product
+                        </h5>
+
+                    </div>
+
+
+                    <!-- MY PRODUCTS -->
+
+                    <div
+                        class="home-action"
+                        onclick="showPage('myProductsPage')">
+
+                        <div class="home-action-icon icon-products">
+
+                            <i class="bi bi-box-seam"></i>
+
+                        </div>
+
+                        <h5>
+                            My Products
+                        </h5>
+
+                    </div>
+
+
+                    <!-- ORDERS -->
+
+                    <div
+                        class="home-action"
+                        onclick="showPage('ordersPage')">
+
+                        <div class="home-action-icon icon-orders">
+
+                            <i class="bi bi-bag-check"></i>
+
+                        </div>
+
+                        <h5>
+                            Orders
+                        </h5>
+
+                    </div>
+
+
+                    <!-- PROFILE -->
+
+                    <div
+                        class="home-action"
+                        onclick="showPage('profilePage')">
+
+                        <div class="home-action-icon icon-profile">
+
+                            <i class="bi bi-person"></i>
+
+                        </div>
+
+                        <h5>
+                            Profile
+                        </h5>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             PRODUCTS — HORIZONTAL SLIDER
+             ================================================== -->
+
+        <div class="home-section">
+
+            <div class="home-section-heading">
+
+                <h4>
+                    <i class="bi bi-box-seam"></i>
+                    Your Products
+                </h4>
+
+                <span>
+                    Swipe / scroll →
+                </span>
+
+            </div>
+
+
+            <div class="home-slider">
+
+
+                <!-- Empty product -->
+
+                <div class="home-slide-card">
+
+                    <div class="home-slide-icon">
+
+                        <i class="bi bi-basket"></i>
+
+                    </div>
+
+                    <h6>
+                        No products yet
+                    </h6>
+
+                    <p>
+                        Add your first handmade product.
+                    </p>
+
+                </div>
+
+
+                <!-- Add product -->
+
+                <div
+                    class="home-slide-card"
+                    onclick="showPage('addProductPage')"
+                    style="cursor:pointer;">
+
+                    <div class="home-slide-icon">
+
+                        <i class="bi bi-plus-circle"></i>
+
+                    </div>
+
+                    <h6>
+                        Add a product
+                    </h6>
+
+                    <p>
+                        Start creating your first listing.
+                    </p>
+
+                </div>
+
+
+                <!-- AI -->
+
+                <div class="home-slide-card">
+
+                    <div class="home-slide-icon">
+
+                        <i class="bi bi-stars"></i>
+
+                    </div>
+
+                    <h6>
+                        AI Product Assistant
+                    </h6>
+
+                    <p>
+                        Let AI help create your product listing.
+                    </p>
+
+                </div>
+
+
+                <!-- More card -->
+
+                <div class="home-slide-card">
+
+                    <div class="home-slide-icon">
+
+                        <i class="bi bi-camera"></i>
+
+                    </div>
+
+                    <h6>
+                        Product Photography
+                    </h6>
+
+                    <p>
+                        Capture a photo and improve your listing.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             ORDERS — HORIZONTAL SLIDER
+             ================================================== -->
+
+        <div class="home-section">
+
+            <div class="home-section-heading">
+
+                <h4>
+                    <i class="bi bi-bag-check"></i>
+                    Recent Orders
+                </h4>
+
+                <span>
+                    Swipe / scroll →
+                </span>
+
+            </div>
+
+
+            <div class="home-slider">
+
+
+                <!-- Empty orders -->
+
+                <div class="home-slide-card">
+
+                    <div class="home-slide-icon">
+
+                        <i class="bi bi-bag"></i>
+
+                    </div>
+
+                    <h6>
+                        No orders yet
+                    </h6>
+
+                    <p>
+                        Your customer orders will appear here.
+                    </p>
+
+                </div>
+
+
+                <!-- View orders -->
+
+                <div
+                    class="home-slide-card"
+                    onclick="showPage('ordersPage')"
+                    style="cursor:pointer;">
+
+                    <div class="home-slide-icon">
+
+                        <i class="bi bi-arrow-right-circle"></i>
+
+                    </div>
+
+                    <h6>
+                        View all orders
+                    </h6>
+
+                    <p>
+                        Check your complete order history.
+                    </p>
+
+                </div>
+
+
+                <!-- Future order -->
+
+                <div class="home-slide-card">
+
+                    <div class="home-slide-icon">
+
+                        <i class="bi bi-truck"></i>
+
+                    </div>
+
+                    <h6>
+                        Order tracking
+                    </h6>
+
+                    <p>
+                        Track your customer deliveries here.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             AI — HORIZONTAL SLIDER
+             ================================================== -->
+
+        <div class="home-section">
+
+            <div class="home-section-heading">
+
+                <h4>
+                    <i class="bi bi-stars"></i>
+                    AI, working for you
+                </h4>
+
+                <span>
+                    Swipe / scroll →
+                </span>
+
+            </div>
+
+
+            <div class="home-slider">
+
+
+                <!-- PHOTO -->
+
+                <div class="home-ai-card">
+
+                    <div class="home-ai-icon">
+
+                        <i class="bi bi-camera"></i>
+
+                    </div>
+
+                    <h6>
+                        Snap a photo, get a listing
+                    </h6>
+
+                    <p>
+                        AI can help create your title,
+                        description and product details.
+                    </p>
+
+                </div>
+
+
+                <!-- VOICE -->
+
+                <div class="home-ai-card">
+
+                    <div class="home-ai-icon">
+
+                        <i class="bi bi-mic"></i>
+
+                    </div>
+
+                    <h6>
+                        Speak your product details
+                    </h6>
+
+                    <p>
+                        Use voice input to describe your
+                        handmade product quickly.
+                    </p>
+
+                </div>
+
+
+                <!-- PRICING -->
+
+                <div class="home-ai-card">
+
+                    <div class="home-ai-icon">
+
+                        <i class="bi bi-currency-rupee"></i>
+
+                    </div>
+
+                    <h6>
+                        Smart Pricing
+                    </h6>
+
+                    <p>
+                        Get an AI-assisted price suggestion
+                        for your handmade product.
+                    </p>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="home-ai-card">
+
+                    <div class="home-ai-icon">
+
+                        <i class="bi bi-file-text"></i>
+
+                    </div>
+
+                    <h6>
+                        AI Description
+                    </h6>
+
+                    <p>
+                        Generate a professional product
+                        description in seconds.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= ADD PRODUCT ================= -->
+ <!-- ================= ADD PRODUCT ================= -->
+
+<style>
+/* ================= LANGUAGE SELECTOR ================= */
+.lang-selector{
+    position:fixed;
+    top:18px; right:18px;
+    z-index:800;
+    display:flex;
+    gap:8px;
+}
+.lang-btn{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1.5px solid var(--border);
+    background:var(--card);
+    color:var(--muted);
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+.lang-btn.active{
+    background:var(--primary);
+    color:#fff;
+    border-color:var(--primary);
+}
+.lang-btn:hover{
+    border-color:var(--primary);
+}
+@media (max-width:576px){
+    .lang-selector{
+        top:12px;
+        right:12px;
+    }
+    .lang-btn{
+        width:36px;
+        height:36px;
+        font-size:10px;
+    }
+}
+
+/* ================= STATUS CONFIRMATIONS ================= */
+.status-indicator{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 12px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:600;
+}
+.status-success{
+    background:var(--success-light);
+    color:var(--success);
+}
+.status-info{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+
+/* ==========================================================
+   ARTISAN AI — ADD PRODUCT
+   SINGLE SCREEN / NO PAGE SCROLL
+   ========================================================== */
+
+#addProductPage {
+    height: 100vh;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+
+/* ---------- Header ---------- */
+
+#addProductPage .add-header {
+    height: 82px;
+
+    display: grid;
+    grid-template-columns: 70px 1fr 70px;
+
+    align-items: center;
+
+    padding: 0 18px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #eadfd2;
+}
+
+#addProductPage .add-header-title {
+    text-align: center;
+
+    font-size: 25px;
+
+    font-weight: 700;
+
+    color: #2d241e;
+}
+
+#addProductPage .add-back {
+    width: 58px;
+    height: 58px;
+
+    border-radius: 50%;
+
+    border: 1px solid #eadfd2;
+
+    background: white;
+
+    color: #76502f;
+
+    font-size: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+
+/* ==========================================================
+   MAIN AREA
+   Everything fits inside one screen
+   ========================================================== */
+
+#addProductPage .add-screen {
+    height: calc(100vh - 82px - 100px);
+
+    min-height: 500px;
+
+    padding: 20px 28px;
+
+    display: grid;
+
+    grid-template-columns: 1.05fr 0.95fr;
+
+    gap: 24px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff9f0 0%,
+            #f5eadb 100%
+        );
+}
+
+
+/* ==========================================================
+   LEFT SIDE — PRODUCT DETAILS
+   ========================================================== */
+#addProductPage .details-panel {
+    height: 100%;
+    min-height: 0;
+    padding: 24px 26px;
+
+    background: white;
+
+    border: 1px solid #eadfd2;
+    border-radius: 28px;
+
+    box-shadow:
+        0 10px 30px rgba(80,50,30,0.07);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+#addProductPage .details-heading {
+    margin-bottom: 14px;
+}
+
+#addProductPage .details-heading h2 {
+    margin: 0 0 7px;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    color: #2b211b;
+}
+
+#addProductPage .details-heading p {
+    margin: 0;
+
+    font-size: 15px;
+
+    color: #887a6e;
+}
+
+
+/* ---------- Fields ---------- */
+
+#addProductPage .add-field {
+    margin-bottom: 12px;
+}
+
+#addProductPage .add-field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: #3d3027;
+}
+
+#addProductPage .add-field input,
+#addProductPage .add-field textarea {
+    width: 100%;
+
+    border: 1px solid #dfd0c0;
+
+    border-radius: 15px;
+
+    background: #fffdfb;
+
+    padding: 13px 15px;
+
+    font-size: 15px;
+
+    color: #332921;
+}
+
+#addProductPage .add-field input {
+    height: 50px;
+}
+
+#addProductPage .add-field textarea {
+    height: 105px;
+
+    resize: none;
+}
+
+#addProductPage .add-field input:focus,
+#addProductPage .add-field textarea:focus {
+    outline: none;
+
+    border-color: #a46332;
+
+    box-shadow:
+        0 0 0 3px rgba(164,99,50,0.10);
+}
+
+#addProductPage .field-help {
+    margin-top: 5px;
+
+    font-size: 12px;
+
+    color: #988b80;
+}
+
+
+/* ==========================================================
+   RIGHT SIDE
+   ========================================================== */
+
+#addProductPage .help-panel {
+    height: 100%;
+
+    min-height: 0;
+
+    display: grid;
+
+    grid-template-rows: 1fr auto;
+
+    gap: 18px;
+}
+
+
+/* ==========================================================
+   PHOTO + VOICE AREA
+   ========================================================== */
+
+#addProductPage .media-panel {
+    min-height: 0;
+
+    padding: 20px;
+
+    background: white;
+
+    border: 1px solid #eadfd2;
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 10px 30px rgba(80,50,30,0.07);
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+#addProductPage .media-heading {
+    text-align: center;
+
+    margin-bottom: 20px;
+}
+
+#addProductPage .media-heading .big-icon {
+    width: 62px;
+    height: 62px;
+
+    margin: 0 auto 12px;
+
+    border-radius: 19px;
+
+    background: #f3e3d2;
+
+    color: #925a28;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+}
+
+#addProductPage .media-heading h3 {
+    margin: 0 0 5px;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 24px;
+
+    color: #2c211b;
+}
+
+#addProductPage .media-heading p {
+    margin: 0;
+
+    font-size: 13px;
+
+    color: #8c7e72;
+}
+
+
+/* ---------- Photo / Voice buttons ---------- */
+
+#addProductPage .media-options {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+}
+
+#addProductPage .media-option {
+    min-height: 130px;
+
+    padding: 20px 12px;
+
+    border-radius: 21px;
+
+    background: #fffdfb;
+
+    border: 1.5px solid #ddcbb8;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+#addProductPage .media-option:hover {
+    transform: translateY(-3px);
+
+    border-color: #9b6334;
+
+    background: #fff8f0;
+
+    box-shadow:
+        0 8px 18px rgba(80,50,30,0.08);
+}
+
+#addProductPage .media-option i {
+    font-size: 34px;
+
+    color: #925a28;
+
+    margin-bottom: 10px;
+}
+
+#addProductPage .media-option.voice i {
+    color: #b85d53;
+}
+
+#addProductPage .media-option strong {
+    font-size: 15px;
+
+    color: #382b23;
+}
+
+#addProductPage .media-option span {
+    margin-top: 4px;
+
+    font-size: 12px;
+
+    color: #95877b;
+}
+
+
+/* ==========================================================
+   AI EXPLANATION
+   ========================================================== */
+
+#addProductPage .ai-info {
+    padding: 16px 18px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8ed,
+            #f7eee4
+        );
+
+    border: 1px solid #ead7c3;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+#addProductPage .ai-info-icon {
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 13px;
+
+    background: #ead9c7;
+
+    color: #925a28;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 19px;
+}
+
+#addProductPage .ai-info strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 14px;
+
+    color: #49362a;
+}
+
+#addProductPage .ai-info span {
+    display: block;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    color: #817267;
+}
+
+
+/* ==========================================================
+   BOTTOM ACTION
+   ========================================================== */
+
+#addProductPage .continue-panel {
+    background: white;
+
+    border: 1px solid #eadfd2;
+
+    border-radius: 23px;
+
+    padding: 17px;
+
+    box-shadow:
+        0 8px 25px rgba(80,50,30,0.07);
+}
+
+#addProductPage .continue-button {
+    width: 100%;
+
+    height: 58px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #895528,
+            #b76849
+        );
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+#addProductPage .continue-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(100,60,30,0.17);
+}
+
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 900px) {
+
+    #addProductPage .add-screen {
+        grid-template-columns: 1fr;
+
+        overflow-y: auto;
+
+        height: calc(100vh - 82px - 100px);
+    }
+
+    #addProductPage .details-panel,
+    #addProductPage .help-panel {
+        height: auto;
+    }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 600px) {
+
+    #addProductPage .add-header {
+        height: 70px;
+
+        grid-template-columns: 55px 1fr 55px;
+
+        padding: 0 10px;
+    }
+
+    #addProductPage .add-header-title {
+        font-size: 20px;
+    }
+
+    #addProductPage .add-back {
+        width: 46px;
+        height: 46px;
+
+        font-size: 19px;
+    }
+
+    #addProductPage .add-screen {
+        height: calc(100vh - 70px - 88px);
+
+        min-height: 0;
+
+        padding: 12px;
+
+        gap: 12px;
+
+        overflow-y: auto;
+    }
+
+    #addProductPage .details-panel {
+        padding: 20px;
+
+        border-radius: 22px;
+    }
+
+    #addProductPage .details-heading h2 {
+        font-size: 25px;
+    }
+
+    #addProductPage .details-heading p {
+        font-size: 13px;
+    }
+
+    #addProductPage .add-field {
+        margin-bottom: 14px;
+    }
+
+    #addProductPage .add-field textarea {
+        height: 105px;
+    }
+
+    #addProductPage .media-panel {
+        padding: 20px;
+
+        border-radius: 22px;
+    }
+
+    #addProductPage .media-options {
+        gap: 9px;
+    }
+
+    #addProductPage .media-option {
+        min-height: 115px;
+
+        padding: 12px 5px;
+    }
+
+    #addProductPage .media-option i {
+        font-size: 27px;
+    }
+
+    #addProductPage .continue-panel {
+        border-radius: 19px;
+    }
+
+}
+</style>
+
+
+<section id="addProductPage" class="page">
+
+
+    <!-- ======================================================
+         HEADER
+         ====================================================== -->
+
+    <div class="add-header">
+
+        <button
+            type="button"
+            class="add-back"
+            onclick="showPage('homePage')"
+            aria-label="Back to home">
+
+            <i class="bi bi-arrow-left"></i>
+
+        </button>
+
+
+        <div class="add-header-title">
+            Add Product
+        </div>
+
+
+        <div></div>
+
+    </div>
+
+
+    <!-- ======================================================
+         SINGLE SCREEN
+         ====================================================== -->
+
+    <div class="add-screen">
+
+
+        <!-- ==================================================
+             LEFT — PRODUCT DETAILS
+             ================================================== -->
+
+        <div class="details-panel">
+
+
+            <div class="details-heading">
+
+                <h2>
+                    Tell us about your product
+                </h2>
+
+                <p>
+                    Just a few simple details. No complicated steps.
+                </p>
+
+            </div>
+
+
+            <!-- PRODUCT NAME -->
+
+            <div class="add-field">
+
+                <label for="productName">
+                    What did you make?
+                </label>
+
+                <input
+                    id="productName"
+                    type="text"
+                    placeholder="Example: Handmade Cotton Saree">
+
+                <div class="field-help">
+                    Enter the name you normally call your product.
+                </div>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="add-field">
+
+                <label for="productDescription">
+                    Tell us about it
+                </label>
+
+                <textarea
+                    id="productDescription"
+                    placeholder="For example: Cotton saree made using traditional handloom techniques..."></textarea>
+
+                <div class="field-help">
+                    Don't worry about perfect words. ArtisanAI will help.
+                </div>
+
+            </div>
+
+
+            <!-- AI INFORMATION -->
+
+            <div class="ai-info">
+
+                <div class="ai-info-icon">
+
+                    <i class="bi bi-stars"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        We'll help with the rest
+                    </strong>
+
+                    <span>
+                        ArtisanAI can suggest the title, description,
+                        category, tags and price for you.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==================================================
+             RIGHT SIDE
+             ================================================== -->
+
+        <div class="help-panel">
+
+
+            <!-- ==================================================
+                 PHOTO + VOICE
+                 ================================================== -->
+
+            <div class="media-panel">
+
+
+                <div class="media-heading">
+
+                    <div class="big-icon">
+
+                        <i class="bi bi-hand-index-thumb"></i>
+
+                    </div>
+
+                    <h3>
+                        Show us or tell us
+                    </h3>
+
+                    <p>
+                        Choose whichever feels easier.
+                    </p>
+
+                </div>
+
+
+                <div class="media-options">
+
+
+                    <!-- PHOTO -->
+<div
+    class="media-option photo-option"
+    id="addProductPhotoOption"
+    onclick="showPage('cameraPage')">
+
+    <div id="addProductPhotoEmpty">
+
+        <i class="bi bi-camera"></i>
+
+        <strong>
+            Take a Photo
+        </strong>
+
+        <span>
+            Show your product
+        </span>
+
+    </div>
+
+
+    <div
+        id="addProductPhotoDone"
+        style="display:none; width:100%;">
+
+        <img
+            id="addProductPhotoThumb"
+            alt="Uploaded product photo"
+            style="
+                width:100%;
+                height:120px;
+                object-fit:cover;
+                border-radius:15px;
+                display:block;
+                margin-bottom:10px;
+            ">
+
+        <strong
+            style="
+                display:block;
+                color:var(--success);
+                font-size:15px;
+            ">
+
+            ✓ Photo added
+
+        </strong>
+
+        <span>
+            Tap to change photo
+        </span>
+
+    </div>
+
+</div>
+
+                    <!-- VOICE -->
+
+                    <div
+                        class="media-option voice"
+                        onclick="showPage('voicePage')">
+
+                        <i class="bi bi-mic"></i>
+
+                        <strong>
+                            Speak
+                        </strong>
+
+                        <span>
+                            Tell us naturally
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==================================================
+                 CONTINUE
+                 ================================================== -->
+
+            <div class="continue-panel">
+
+                <button
+                    type="button"
+                    class="continue-button"
+                    onclick="generateAIResults()">
+
+                    <i class="bi bi-stars"></i>
+
+                    Help me create my listing
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- ================= CAMERA / PHOTO ================= -->
+<!-- ================= CAMERA / PHOTO ================= -->
+ 
+<section id="cameraPage" class="page">
+ 
+    <nav class="app-navbar">
+        <button class="icon-btn" onclick="showPage('addProductPage')" aria-label="Back">
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg>
+        </button>
+        <span class="nav-title">Add Product Photo</span>
+        <span style="width:42px"></span>
+    </nav>
+ 
+    <div class="app-container">
+ 
+        <div class="product-image-box" id="imageDropZone" onclick="document.getElementById('productImage').click()">
+            <svg class="icon fs-1" aria-hidden="true"><use href="#i-camera"></use></svg>
+            <h6 class="mt-2 mb-0">Tap to select or capture a photo</h6>
+            <p class="text-muted small mb-0">Good lighting helps the AI describe your craft accurately.</p>
+            <input type="file" id="productImage" accept="image/*" capture="environment" hidden onchange="previewImage(event)">
+        </div>
+ 
+        <img id="imagePreview" class="mt-3">
+ 
+        <div class="photo-actions" id="photoActions">
+            <button class="btn btn-outline-secondary" onclick="retakePhoto()">
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-repeat"></use></svg> Retake
+            </button>
+            <button class="btn btn-outline-danger" onclick="removePhoto()">
+                <svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg> Remove
+            </button>
+        </div>
+ 
+        <button class="btn btn-primary btn-lg w-100 mt-4" onclick="useProductPhoto()">
+            Continue
+        </button>
+ 
+    </div>
+ 
+</section>
+ 
+ 
+<!-- ================= VOICE INPUT ================= -->
+ 
+<section id="voicePage" class="page">
+ 
+    <nav class="app-navbar">
+        <button class="icon-btn" onclick="showPage('addProductPage')" aria-label="Back">
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg>
+        </button>
+        <span class="nav-title">Voice Input</span>
+        <span style="width:42px"></span>
+    </nav>
+ 
+    <div class="app-container text-center">
+ 
+        <h4>Describe your product</h4>
+        <p class="text-muted">Tap the microphone and explain your product naturally.</p>
+ 
+        <div class="mic-wrap" id="micWrap">
+            <div class="mic-ring"></div>
+            <div class="mic-ring"></div>
+            <div class="mic-ring"></div>
+            <button class="mic-button" id="micButton" onclick="toggleVoice()" aria-label="Start or stop recording">
+                <svg class="icon" aria-hidden="true"><use id="micIcon" href="#i-mic-fill"></use></svg>
+            </button>
+        </div>
+ 
+        <p id="voiceStatus">Ready to listen</p>
+        <p class="voice-timer" id="voiceTimer" style="display:none;">00:00</p>
+ 
+        <div class="card feature-card p-3 transcript-box">
+            <small class="text-muted">Voice transcript</small>
+            <p id="voiceTranscript" class="mb-0 mt-1">Your converted speech will appear here...</p>
+        </div>
+ 
+        <div class="transcript-actions">
+            <button class="btn btn-outline-danger" onclick="clearTranscript()">
+                <svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg> Delete
+            </button>
+            <button class="btn btn-primary" onclick="useVoiceText()">
+                <svg class="icon" aria-hidden="true"><use href="#i-check2"></use></svg> Use this text
+            </button>
+        </div>
+ 
+    </div>
+ 
+</section>
+ 
+ 
+<!-- ================= AI RESULTS ================= -->
+ 
+<section id="aiResultsPage" class="page">
+ 
+    <nav class="app-navbar">
+        <button class="icon-btn" onclick="showPage('addProductPage')" aria-label="Back">
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg>
+        </button>
+        <span class="nav-title">AI Results</span>
+        <span style="width:42px"></span>
+    </nav>
+ 
+    <div class="step-track">
+        <div class="step done">Details</div>
+        <div class="step done">Media</div>
+        <div class="step active">AI Insights</div>
+        <div class="step">Pricing</div>
+        <div class="step">Publish</div>
+    </div>
+ 
+    <div class="app-container">
+ 
+        <div class="card feature-card p-3 mb-3 d-flex flex-row align-items-center gap-2" style="background:var(--success-light); border:none;">
+            <svg class="icon text-success" aria-hidden="true"><use href="#i-stars"></use></svg>
+            <small class="mb-0" style="color:var(--success); font-weight:600;">Here's what our AI found from your photo and description</small>
+        </div>
+ 
+        <div class="ai-card mb-3">
+            <h6><svg class="icon" aria-hidden="true"><use href="#i-tag"></use></svg> Product Name</h6>
+            <p>Handmade Cotton Saree</p>
+        </div>
+ 
+        <div class="ai-card mb-3">
+            <h6><svg class="icon" aria-hidden="true"><use href="#i-card-text"></use></svg> AI Description</h6>
+            <p>A beautifully handcrafted cotton saree created using traditional artisan techniques.</p>
+        </div>
+ 
+        <div class="ai-card mb-3">
+            <h6><svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg> Category</h6>
+            <span class="badge" style="background:var(--primary-light); color:var(--primary-dark);">Clothing</span>
+        </div>
+ 
+        <div class="ai-card mb-3">
+            <h6><svg class="icon" aria-hidden="true"><use href="#i-tags"></use></svg> Suggested Tags</h6>
+            <span class="badge" style="background:var(--border); color:var(--text);">Handmade</span>
+            <span class="badge" style="background:var(--border); color:var(--text);">Cotton</span>
+            <span class="badge" style="background:var(--border); color:var(--text);">Traditional</span>
+        </div>
+ 
+        <div class="ai-card mb-3">
+            <h6><svg class="icon" aria-hidden="true"><use href="#i-droplet"></use></svg> Detected Materials</h6>
+            <p>Cotton, natural dyes</p>
+        </div>
+ 
+        <div class="ai-card">
+            <h6><svg class="icon" aria-hidden="true"><use href="#i-graph-up"></use></svg> AI Confidence</h6>
+            <div class="confidence-track"><div class="confidence-fill" style="width:88%;"></div></div>
+            <p class="mt-1 mb-0 small text-muted">88% match confidence</p>
+        </div>
+ 
+        <button class="btn btn-success btn-lg w-100 mt-4" onclick="calculateSmartPrice()">
+            <span id="pricingBtnLabel">View Smart Price <svg class="icon" aria-hidden="true"><use href="#i-currency-rupee"></use></svg></span>
+        </button>
+ 
+    </div>
+ 
+</section>
+ 
+ 
+<!-- ================= SMART PRICING ================= -->
+ 
+<section id="pricingPage" class="page">
+ 
+    <nav class="app-navbar">
+        <button class="icon-btn" onclick="showPage('aiResultsPage')" aria-label="Back">
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg>
+        </button>
+        <span class="nav-title">Smart Pricing</span>
+        <span style="width:42px"></span>
+    </nav>
+ 
+    <div class="step-track">
+        <div class="step done">Details</div>
+        <div class="step done">Media</div>
+        <div class="step done">AI Insights</div>
+        <div class="step active">Pricing</div>
+        <div class="step">Publish</div>
+    </div>
+ 
+    <div class="app-container">
+ 
+        <div class="price-box">
+            <small>AI RECOMMENDED PRICE</small>
+            <h1 class="display-4">₹1,499</h1>
+            <p class="mb-0 text-muted">Based on product category, materials and market trends.</p>
+        </div>
+ 
+        <div class="card feature-card p-3 mt-3">
+            <div class="d-flex justify-content-between">
+                <span>Estimated Range</span>
+                <strong>₹1,200 – ₹1,700</strong>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <span>Market Demand</span>
+                <span class="fw-bold" style="color:var(--success);">High</span>
+            </div>
+        </div>
+ 
+        <details class="mt-3">
+            <summary style="cursor:pointer; font-weight:600; color:var(--primary); padding:6px 0;">Why this price? (tap to see)</summary>
+ 
+        <div class="card feature-card p-3 mt-2">
+            <div class="factor-row">
+                <div class="factor-icon"><svg class="icon" aria-hidden="true"><use href="#i-droplet"></use></svg></div>
+                <div class="factor-text"><strong>Material</strong><span>Pure cotton typically commands a premium</span></div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon"><svg class="icon" aria-hidden="true"><use href="#i-stars"></use></svg></div>
+                <div class="factor-text"><strong>Craft Complexity</strong><span>Hand-weaving adds significant value</span></div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon"><svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg></div>
+                <div class="factor-text"><strong>Category</strong><span>Clothing sees steady buyer interest</span></div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon"><svg class="icon" aria-hidden="true"><use href="#i-graph-up-arrow"></use></svg></div>
+                <div class="factor-text"><strong>Market Demand</strong><span>High demand for handloom sarees this season</span></div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon"><svg class="icon" aria-hidden="true"><use href="#i-shop"></use></svg></div>
+                <div class="factor-text"><strong>Similar Products</strong><span>Comparable sarees sell between ₹1,200–₹1,700</span></div>
+            </div>
+        </div>
+        </details>
+ 
+        <button class="btn btn-primary btn-lg w-100 mt-4" onclick="showPage('editPublishPage')">
+            Edit &amp; Publish
+        </button>
+ 
+    </div>
+ 
+</section>
+ 
+ 
+<!-- ================= EDIT & PUBLISH ================= -->
+ 
+<section id="editPublishPage" class="page">
+ 
+    <nav class="app-navbar">
+        <button class="icon-btn" onclick="showPage('pricingPage')" aria-label="Back">
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg>
+        </button>
+        <span class="nav-title">Edit &amp; Publish</span>
+        <span style="width:42px"></span>
+    </nav>
+ 
+    <div class="step-track">
+        <div class="step done">Details</div>
+        <div class="step done">Media</div>
+        <div class="step done">AI Insights</div>
+        <div class="step done">Pricing</div>
+        <div class="step active">Publish</div>
+    </div>
+ 
+    <div class="app-container">
+ 
+        <div class="card feature-card p-3 mb-3 d-flex flex-row align-items-center gap-3">
+            <div class="thumb-placeholder"><svg class="icon" aria-hidden="true"><use href="#i-image"></use></svg></div>
+            <div>
+                <h6 class="mb-1">Ready to publish?</h6>
+                <p class="mb-0 small text-muted">Review the details below before your product goes live.</p>
+            </div>
+        </div>
+ 
+        <div class="card feature-card p-4">
+ 
+            <div class="mb-3">
+                <label>Product Name</label>
+                <input id="publishName" class="form-control" value="Handmade Cotton Saree">
+            </div>
+ 
+            <div class="mb-3">
+                <label>Description</label>
+                <textarea id="publishDescription" class="form-control" rows="5">A beautifully handcrafted cotton saree created using traditional artisan techniques.</textarea>
+            </div>
+ 
+            <div class="mb-3">
+                <label>Category</label>
+                <select id="publishCategory" class="form-select">
+                    <option>Clothing</option>
+                    <option>Home Decor</option>
+                    <option>Jewelry</option>
+                    <option>Pottery</option>
+                </select>
+            </div>
+ 
+            <div class="mb-3">
+                <label>Price</label>
+                <div class="input-group">
+                    <span class="input-group-text">₹</span>
+                    <input id="publishPrice" type="number" class="form-control" value="1499">
+                </div>
+            </div>
+ 
+            <button class="btn btn-success btn-lg w-100" onclick="publishProduct()">
+                <span id="publishBtnLabel"><svg class="icon" aria-hidden="true"><use href="#i-check-circle"></use></svg> Publish Product</span>
+            </button>
+ 
+        </div>
+ 
+    </div>
+ 
+</section>
+ 
+ 
+<!-- ================= MY PRODUCTS ================= -->
+ 
+<section id="myProductsPage" class="page">
+ 
+    <nav class="app-navbar">
+        <span class="nav-title">My Products</span>
+        <button class="icon-btn" onclick="startNewProduct()" aria-label="Add product">
+            <svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>
+        </button>
+    </nav>
+ 
+    <div class="app-container">
+ 
+        <div id="productsContainer"></div>
+ 
+    </div>
+ 
+</section>
+ 
+ 
+<!-- ================= ORDERS ================= -->
+ 
+<section id="ordersPage" class="page">
+ 
+    <nav class="app-navbar">
+        <span class="nav-title">Orders</span>
+        <span style="width:42px"></span>
+    </nav>
+ 
+    <div class="app-container">
+ 
+        <div class="card feature-card p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <strong>Order #1024</strong>
+                <span class="order-status order-pending">Pending</span>
+            </div>
+            <p class="mb-1 mt-2">Handmade Cotton Saree</p>
+            <small class="text-muted">Quantity: 1 &middot; Placed 3 Sep 2026</small>
+            <h6 class="mt-2 mb-0">₹1,499</h6>
+        </div>
+ 
+        <div class="card feature-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <strong>Order #1023</strong>
+                <span class="order-status order-delivered">Delivered</span>
+            </div>
+            <p class="mb-1 mt-2">Handmade Wooden Bowl</p>
+            <small class="text-muted">Quantity: 2 &middot; Placed 28 Aug 2026</small>
+            <h6 class="mt-2 mb-0">₹900</h6>
+        </div>
+ 
+        <div id="ordersContainer"></div>
+ 
+    </div>
+ 
+</section>
+ 
+ 
+<!-- ================= PROFILE ================= -->
+ 
+<section id="profilePage" class="page">
+ 
+    <nav class="app-navbar">
+        <span class="nav-title">My Profile</span>
+        <span style="width:42px"></span>
+    </nav>
+ 
+    <div class="app-container text-center">
+ 
+        <div class="profile-avatar" id="profileAvatarInitial">A</div>
+        <h4 class="mt-3 mb-0" id="profileName">Artisan Name</h4>
+        <p class="text-muted"><svg class="icon" aria-hidden="true"><use href="#i-geo-alt"></use></svg> Chennai, Tamil Nadu</p>
+ 
+        <div class="profile-stats">
+            <div class="stat">
+                <div class="num" id="profileProductCount">2</div>
+                <div class="lbl">Products</div>
+            </div>
+            <div class="stat">
+                <div class="num" id="profileOrderCount">2</div>
+                <div class="lbl">Orders</div>
+            </div>
+        </div>
+ 
+        <div class="card feature-card p-4 text-start">
+ 
+            <div class="mb-3">
+                <label>Full Name</label>
+                <input id="profileNameInput" class="form-control" value="Artisan Name">
+            </div>
+ 
+            <div class="mb-3">
+                <label>Email</label>
+                <input id="profileEmailInput" class="form-control" value="artisan@email.com">
+            </div>
+ 
+            <div class="mb-3">
+                <label>Phone</label>
+                <input class="form-control" placeholder="+91">
+            </div>
+ 
+            <button class="btn btn-primary w-100">Save Profile</button>
+ 
+        </div>
+ 
+        <button class="btn btn-outline-danger w-100 mt-3" onclick="logoutUser()">
+            <svg class="icon" aria-hidden="true"><use href="#i-box-arrow-right"></use></svg> Logout
+        </button>
+ 
+    </div>
+ 
+</section>
+ 
+ 
+<!-- ================= BOTTOM NAVIGATION ================= -->
+ 
+<div id="bottomNav" class="bottom-nav">
+    <button onclick="showPage('homePage', this)"><svg class="icon" aria-hidden="true"><use href="#i-house"></use></svg>Home</button>
+    <button onclick="startNewProduct(this)"><svg class="icon" aria-hidden="true"><use href="#i-plus-circle"></use></svg>Add</button>
+    <button onclick="showPage('myProductsPage', this)"><svg class="icon" aria-hidden="true"><use href="#i-box"></use></svg>Products</button>
+    <button onclick="showPage('ordersPage', this)"><svg class="icon" aria-hidden="true"><use href="#i-bag"></use></svg>Orders</button>
+    <button onclick="showPage('profilePage', this)"><svg class="icon" aria-hidden="true"><use href="#i-person"></use></svg>Profile</button>
+</div>
+ 
+ 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+ 
+ 
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+
+    /* ---------- LANGUAGE SYSTEM ---------- */
+    
+    let currentLanguage = localStorage.getItem('artisanLanguage') || 'en';
+
+    const translations = {
+        en: {
+            greeting_morning: 'Good morning',
+            greeting_afternoon: 'Good afternoon',
+            greeting_evening: 'Good evening',
+            welcome_msg: 'Let\'s turn your craftsmanship into your next great product.',
+            add_product: 'Add Product',
+            take_photo: 'Take a Photo',
+            speak: 'Speak',
+            ai_found: 'Here\'s what our AI found',
+            suggested_price: 'AI Suggested Price',
+            ready_publish: 'Ready to publish?',
+            publish_btn: 'Publish Product'
+        },
+        ta: {
+            greeting_morning: 'Good morning',
+            greeting_afternoon: 'Good afternoon',
+            greeting_evening: 'Good evening',
+            welcome_msg: 'உங்கள் கலைஞர்மையை உங்கள் அடுத்த பெரிய பொருளாக மாற்றுவோம்.',
+            add_product: 'பொருளைச் சேர்க்கவும்',
+            take_photo: 'புகைப்படம் எடுக்கவும்',
+            speak: 'பேசவும்',
+            ai_found: 'AI கண்டறிந்தவை',
+            suggested_price: 'AI பரிந்துரைத்த விலை',
+            ready_publish: 'வெளியிடத் தயாரா?',
+            publish_btn: 'பொருளை வெளியிடுக'
+        },
+        hi: {
+            greeting_morning: 'सुप्रभात',
+            greeting_afternoon: 'शुभ अपराह्न',
+            greeting_evening: 'शुभ संध्या',
+            welcome_msg: 'आपकी कारीगरी को अपने अगले महान उत्पाद में बदलें।',
+            add_product: 'उत्पाद जोड़ें',
+            take_photo: 'फोटो लें',
+            speak: 'बोलें',
+            ai_found: 'AI ने यह पाया',
+            suggested_price: 'AI द्वारा सुझाया गया मूल्य',
+            ready_publish: 'प्रकाशित करने के लिए तैयार?',
+            publish_btn: 'उत्पाद प्रकाशित करें'
+        }
+    };
+
+    function setLanguage(lang){
+        currentLanguage = lang;
+        localStorage.setItem('artisanLanguage', lang);
+        
+        // Update language selector buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+    }
+
+    function t(key){
+        return translations[currentLanguage][key] || translations['en'][key];
+    }
+
+    // Initialize language on load
+    setLanguage(currentLanguage);
+ 
+    /* ---------- Core navigation ---------- */
+ 
+    function showPage(pageId, button){
+ 
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+ 
+        document.getElementById(pageId).classList.add('active');
+ 
+        const authPages = ['loginPage', 'registerPage'];
+        const bottomNav = document.getElementById('bottomNav');
+ 
+        if(authPages.includes(pageId)){
+            bottomNav.style.display = 'none';
+        } else {
+            bottomNav.style.display = 'flex';
+        }
+ 
+        if(button){
+            document.querySelectorAll('.bottom-nav button').forEach(btn => {
+                btn.classList.remove('active-nav');
+            });
+            button.classList.add('active-nav');
+        }
+ 
+        window.scrollTo(0, 0);
+    }
+ 
+ 
+    /* ---------- Auth (in-memory account store — no backend yet, resets on reload) ---------- */
+ 
+    // A ready-made demo account so anyone testing the app can log in right away.
+    let registeredUsers = {
+        'demo@artisanai.com': { password: 'demo1234', name: 'Meena' }
+    };
+ 
+    let currentUser = { name: 'Artisan', email: '' };
+ 
+    function syncUserUI(){
+        updateGreeting();
+ 
+        const nameEl = document.getElementById('profileName');
+        const avatarEl = document.getElementById('profileAvatarInitial');
+        const nameInput = document.getElementById('profileNameInput');
+        const emailInput = document.getElementById('profileEmailInput');
+ 
+        if(nameEl) nameEl.textContent = currentUser.name;
+        if(avatarEl) avatarEl.textContent = currentUser.name.charAt(0).toUpperCase();
+        if(nameInput) nameInput.value = currentUser.name;
+        if(emailInput && currentUser.email) emailInput.value = currentUser.email;
+    }
+ 
+    function loginUser(){
+ 
+        const emailInput = document.getElementById('loginEmail');
+        const passwordInput = document.getElementById('loginPassword');
+        const email = emailInput.value.trim().toLowerCase();
+        const password = passwordInput.value.trim();
+        const errorEl = document.getElementById('loginError');
+ 
+        if(!email || !password){
+            errorEl.textContent = 'Please enter your email and password.';
+            errorEl.style.display = 'block';
+            return;
+        }
+ 
+        const account = registeredUsers[email];
+ 
+        if(!account){
+            errorEl.textContent = 'Account not found. Please register first.';
+            errorEl.style.display = 'block';
+            return;
+        }
+ 
+        if(account.password !== password){
+            errorEl.textContent = 'Incorrect password. Please try again.';
+            errorEl.style.display = 'block';
+            return;
+        }
+ 
+        errorEl.style.display = 'none';
+        passwordInput.value = '';
+        currentUser = { name: account.name, email: email };
+        syncUserUI();
+        showPage('homePage');
+        showToast('✓ Welcome back, ' + account.name + '!');
+    }
+ 
+    function registerUser(){
+ 
+        const name = document.getElementById('registerName').value.trim();
+        const emailInput = document.getElementById('registerEmail');
+        const passwordInput = document.getElementById('registerPassword');
+        const email = emailInput.value.trim().toLowerCase();
+        const password = passwordInput.value.trim();
+        const errorEl = document.getElementById('registerError');
+ 
+        if(!name || !email || !password){
+            errorEl.textContent = 'Please fill in all fields to continue.';
+            errorEl.style.display = 'block';
+            return;
+        }
+ 
+        if(registeredUsers[email]){
+            errorEl.textContent = 'An account with this email already exists. Please log in instead.';
+            errorEl.style.display = 'block';
+            return;
+        }
+ 
+        errorEl.style.display = 'none';
+        registeredUsers[email] = { password: password, name: name };
+        passwordInput.value = '';
+        currentUser = { name: name, email: email };
+        showToast('✓ Account created! Welcome, ' + name + '!');
+        syncUserUI();
+        showPage('homePage');
+    }
+ 
+    function logoutUser(){
+        currentUser = { name: 'Artisan', email: '' };
+        syncUserUI();
+        showPage('loginPage');
+        showToast('✓ Logged out successfully');
+    }
+ 
+    function togglePasswordVisibility(inputId, btn){
+        const input = document.getElementById(inputId);
+        const iconUse = btn.querySelector('use');
+        if(input.type === 'password'){
+            input.type = 'text';
+            iconUse.setAttribute('href', '#i-eye-slash');
+        } else {
+            input.type = 'password';
+            iconUse.setAttribute('href', '#i-eye');
+        }
+    }
+ 
+ 
+    /* ---------- Home greeting ---------- */
+ 
+    function updateGreeting(){
+        const el = document.getElementById('homeGreeting');
+        if(!el) return;
+        const hour = new Date().getHours();
+        let timeOfDay = 'Good morning';
+        if(hour >= 12 && hour < 17){ timeOfDay = 'Good afternoon'; }
+        else if(hour >= 17){ timeOfDay = 'Good evening'; }
+        el.textContent = timeOfDay + ', ' + currentUser.name + ' 👋';
+    }
+ 
+ 
+    /* ---------- Photo / Camera ---------- */
+ 
+    function previewImage(event){
+
+    const file = event.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        currentProductImage = e.target.result;
+
+        const preview = document.getElementById('imagePreview');
+
+        preview.src = currentProductImage;
+        preview.style.display = 'block';
+
+        const dropZone = document.getElementById('imageDropZone');
+        if(dropZone) dropZone.style.display = 'none';
+
+        const actions = document.getElementById('photoActions');
+        if(actions) actions.classList.add('show');
+    };
+
+    reader.readAsDataURL(file);
+}
+    function retakePhoto(){
+        document.getElementById('productImage').click();
+    }
+ 
+    function removePhoto(){
+        currentProductImage = '';
+        const preview = document.getElementById('imagePreview');
+        preview.src = '';
+        preview.style.display = 'none';
+ 
+        const dropZone = document.getElementById('imageDropZone');
+        if(dropZone) dropZone.style.display = 'flex';
+ 
+        const actions = document.getElementById('photoActions');
+        if(actions) actions.classList.remove('show');
+ 
+        document.getElementById('productImage').value = '';
+ 
+        const note = document.getElementById('photoStatusNote');
+        if(note) note.style.display = 'none';
+    }
+ function useProductPhoto(){
+
+    const preview = document.getElementById('imagePreview');
+
+    if(preview && preview.src && preview.style.display !== 'none'){
+
+        const thumb = document.getElementById('addProductPhotoThumb');
+        const emptyState = document.getElementById('addProductPhotoEmpty');
+        const doneState = document.getElementById('addProductPhotoDone');
+
+        if(thumb){
+            thumb.src = preview.src;
+        }
+
+        if(emptyState){
+            emptyState.style.display = 'none';
+        }
+
+        if(doneState){
+            doneState.style.display = 'block';
+        }
+    }
+
+    showPage('addProductPage');
+}
+ 
+ 
+    /* ---------- Voice input ---------- */
+ 
+    let isRecording = false;
+    let voiceTimerInterval = null;
+    let voiceSeconds = 0;
+ 
+    function toggleVoice(){
+ 
+        const status = document.getElementById('voiceStatus');
+        const micIcon = document.getElementById('micIcon');
+        const transcript = document.getElementById('voiceTranscript');
+        const micButton = document.getElementById('micButton');
+        const micWrap = document.getElementById('micWrap');
+        const timerEl = document.getElementById('voiceTimer');
+ 
+        if(!isRecording){
+ 
+            isRecording = true;
+            status.textContent = 'Listening... Speak now';
+            micIcon.setAttribute('href', '#i-stop-fill');
+            micButton.classList.add('recording');
+            micWrap.classList.add('recording');
+ 
+            voiceSeconds = 0;
+            timerEl.style.display = 'block';
+            timerEl.textContent = '00:00';
+            voiceTimerInterval = setInterval(() => {
+                voiceSeconds++;
+                const m = String(Math.floor(voiceSeconds / 60)).padStart(2, '0');
+                const s = String(voiceSeconds % 60).padStart(2, '0');
+                timerEl.textContent = m + ':' + s;
+            }, 1000);
+ 
+            setTimeout(() => {
+                if(isRecording){
+                    transcript.textContent = 'This is a handmade cotton saree made using traditional weaving techniques.';
+                }
+            }, 2000);
+ 
+        } else {
+ 
+            isRecording = false;
+            status.textContent = 'Voice recording stopped';
+            micIcon.setAttribute('href', '#i-mic-fill');
+            micButton.classList.remove('recording');
+            micWrap.classList.remove('recording');
+            clearInterval(voiceTimerInterval);
+        }
+    }
+ 
+    function clearTranscript(){
+        document.getElementById('voiceTranscript').textContent = 'Your converted speech will appear here...';
+        document.getElementById('voiceStatus').textContent = 'Ready to listen';
+        const note = document.getElementById('voiceStatusNote');
+        if(note) note.style.display = 'none';
+    }
+ 
+    function useVoiceText(){
+        const transcript = document.getElementById('voiceTranscript').textContent.trim();
+        const placeholder = 'Your converted speech will appear here...';
+        const note = document.getElementById('voiceStatusNote');
+ 
+        if(transcript && transcript !== placeholder){
+            const descriptionField = document.getElementById('productDescription');
+            descriptionField.value = transcript;
+            if(note) note.style.display = 'block';
+        } else if(note){
+            note.style.display = 'none';
+        }
+ 
+        showPage('addProductPage');
+    }
+ 
+ 
+    /* ---------- AI / Pricing / Publish (API-ready stubs with loading states) ---------- */
+ 
+    function showLoading(message){
+        document.getElementById('loadingMessage').textContent = message;
+        document.getElementById('loadingOverlay').classList.add('show');
+    }
+ 
+    function hideLoading(){
+        document.getElementById('loadingOverlay').classList.remove('show');
+    }
+ 
+    function showToast(message){
+        const toast = document.getElementById('appToast');
+        document.getElementById('appToastText').textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+ 
+    function generateAIResults(){
+        // TODO: replace with real AI API call using productName / productDescription / uploaded photo
+        showLoading('Reading your product details...');
+        setTimeout(() => {
+            hideLoading();
+            showPage('aiResultsPage');
+        }, 900);
+    }
+ 
+    function calculateSmartPrice(){
+        // TODO: replace with real pricing API call
+        showLoading('Working out a fair price...');
+        setTimeout(() => {
+            hideLoading();
+            showPage('pricingPage');
+        }, 700);
+    }
+ 
+ 
+    /* ---------- Products (in-memory store — no backend yet, resets on reload) ---------- */
+ 
+    let products = [
+        { id: 1, name: 'Handmade Cotton Saree', description: 'A beautifully handcrafted cotton saree created using traditional artisan techniques.', category: 'Clothing', price: 1499, status: 'Published' },
+        { id: 2, name: 'Hand-carved Wooden Bowl', description: 'A rustic hand-carved wooden bowl, perfect for everyday use.', category: 'Home Decor', price: 900, status: 'Draft' }
+    ];
+    let nextProductId = 3;
+    let editingProductId = null;
+    let currentProductImage = '';
+ 
+    function statusClass(status){
+        if(status === 'Published') return 'status-published';
+        if(status === 'Out of Stock') return 'status-outofstock';
+        return 'status-draft';
+    }
+ 
+    function productCardHTML(p){
+        return `
+        <div class="card feature-card product-card mb-3">
+            <div class="d-flex gap-3 align-items-start">
+                ${p.image
+    ? `<img src="${p.image}" class="thumb" alt="${p.name}">`
+    : `<div class="thumb-placeholder"><svg class="icon" aria-hidden="true"><use href="#i-image"></use></svg></div>`
+}
+                <div class="flex-fill">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h6 class="mb-1">${p.name}</h6>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-light border-0" data-bs-toggle="dropdown" aria-label="More options"><svg class="icon" aria-hidden="true"><use href="#i-three-dots-vertical"></use></svg></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><button class="dropdown-item" onclick="openEditProduct(${p.id})"><svg class="icon me-2" aria-hidden="true"><use href="#i-pencil"></use></svg>Edit</button></li>
+                                <li><button class="dropdown-item text-danger" onclick="removeProduct(${p.id})"><svg class="icon me-2" aria-hidden="true"><use href="#i-trash"></use></svg>Remove</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-1">${p.category}</p>
+                    <div class="d-flex align-items-center gap-2">
+                        <strong style="color:var(--success);">₹${Number(p.price).toLocaleString('en-IN')}</strong>
+                        <span class="status-chip ${statusClass(p.status)}">${p.status}</span>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+ 
+    function recentProductCardHTML(p){
+        return `
+        <div class="card feature-card p-3 mb-2 d-flex flex-row align-items-center gap-3">
+            ${p.image
+    ? `<img src="${p.image}" class="thumb" alt="${p.name}">`
+    : `<div class="thumb-placeholder"><svg class="icon" aria-hidden="true"><use href="#i-image"></use></svg></div>`
+}
+            <div class="flex-fill">
+                <h6 class="mb-1">${p.name}</h6>
+                <div class="d-flex align-items-center gap-2">
+                    <strong style="color:var(--success);">₹${Number(p.price).toLocaleString('en-IN')}</strong>
+                    <span class="status-chip ${statusClass(p.status)}">${p.status}</span>
+                </div>
+            </div>
+        </div>`;
+    }
+ 
+    function renderProducts(){
+ 
+        const container = document.getElementById('productsContainer');
+        if(container){
+            container.innerHTML = products.length
+                ? products.map(productCardHTML).join('')
+                : `<div class="empty-state">
+                        <svg class="icon" aria-hidden="true"><use href="#i-basket"></use></svg>
+                        <h6>No products yet</h6>
+                        <p>Your first handmade product is waiting to be added.</p>
+                        <button class="btn btn-primary" onclick="startNewProduct()">
+                            <svg class="icon" aria-hidden="true"><use href="#i-plus-circle"></use></svg> Add Product
+                        </button>
+                   </div>`;
+        }
+ 
+        const recent = document.getElementById('homeRecentProducts');
+        if(recent){
+            if(products.length){
+                recent.innerHTML = products.slice(0, 2).map(recentProductCardHTML).join('')
+                    + `<button class="btn btn-outline-primary w-100 mt-1" onclick="showPage('myProductsPage', document.querySelector('.bottom-nav button:nth-child(3)'))">View all products</button>`;
+            } else {
+                recent.innerHTML = `<div class="empty-state">
+                        <svg class="icon" aria-hidden="true"><use href="#i-basket"></use></svg>
+                        <h6>No products yet</h6>
+                        <p>Your first handmade product is waiting to be added.</p>
+                        <button class="btn btn-primary" onclick="startNewProduct()">
+                            <svg class="icon" aria-hidden="true"><use href="#i-plus-circle"></use></svg> Add Product
+                        </button>
+                   </div>`;
+            }
+        }
+ 
+        updateStats();
+    }
+ 
+    function updateStats(){
+        const count = products.length;
+        const earned = products
+            .filter(p => p.status === 'Published')
+            .reduce((sum, p) => sum + Number(p.price || 0), 0);
+ 
+        const homeCount = document.getElementById('homeProductCount');
+        const profileCount = document.getElementById('profileProductCount');
+        const earnedEl = document.getElementById('homeEarnedAmount');
+ 
+        if(homeCount) homeCount.textContent = count;
+        if(profileCount) profileCount.textContent = count;
+        if(earnedEl) earnedEl.textContent = '₹' + earned.toLocaleString('en-IN');
+    }
+ 
+    function removeProduct(id){
+        products = products.filter(p => p.id !== id);
+        renderProducts();
+        showToast('Product removed.');
+    }
+ 
+    function openEditProduct(id){
+        const p = products.find(item => item.id === id);
+        if(!p) return;
+ 
+        editingProductId = id;
+        document.getElementById('publishName').value = p.name;
+        document.getElementById('publishDescription').value = p.description || '';
+        document.getElementById('publishCategory').value = p.category;
+        document.getElementById('publishPrice').value = p.price;
+ 
+        showPage('editPublishPage');
+    }
+ 
+    function startNewProduct(button){
+        editingProductId = null;
+        document.getElementById('productName').value = '';
+        document.getElementById('productDescription').value = '';
+        removePhoto();
+        clearTranscript();
+        showPage('addProductPage', button);
+    }
+ 
+    function publishProduct(){
+ 
+        const name = document.getElementById('publishName').value.trim();
+        const description = document.getElementById('publishDescription').value.trim();
+        const category = document.getElementById('publishCategory').value;
+        const price = Number(document.getElementById('publishPrice').value) || 0;
+ 
+        if(!name){
+            showToast('Please give your product a name first.');
+            return;
+        }
+ 
+        showLoading('Publishing your product...');
+ 
+        setTimeout(() => {
+ 
+            if(editingProductId){
+                const p = products.find(item => item.id === editingProductId);
+                if(p){
+                    p.name = name;
+                    p.description = description;
+                    p.category = category;
+                    p.price = price;
+                    p.status = 'Published';
+                    p.image = currentProductImage || p.image || '';
+                }
+            } else {
+                products.unshift({
+                    id: nextProductId++,
+                    name: name,
+                    description: description,
+                    category: category,
+                    price: price,
+                    status: 'Published',
+                    image: currentProductImage
+
+                });
+            }
+ 
+            editingProductId = null;
+            renderProducts();
+            hideLoading();
+            showToast('Your product is live! 🎉');
+            showPage('myProductsPage', document.querySelector('.bottom-nav button:nth-child(3)'));
+        }, 900);
+    }
+ 
+ 
+    /* ---------- Initial setup ---------- */
+ 
+    document.getElementById('bottomNav').style.display = 'none';
+    updateGreeting();
+    renderProducts();
+ 
+</script>
+</body>
+</html>
