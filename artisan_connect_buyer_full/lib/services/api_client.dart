@@ -18,7 +18,7 @@ class ApiException implements Exception {
 class ApiClient {
   static const _baseUrlDefault = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://192.168.1.5:3000',
+    defaultValue: 'https://sih26090-artisan-marketplace.onrender.com',
   );
 
   static final ApiClient _instance = ApiClient._internal();
