@@ -1,580 +1,139 @@
-# SIH26090 – Artisan Marketplace
+# SIH26090 – AI-Driven Market Linkage & Smart Cataloging Mobile Application for Marginalized Artisans
 
-## AI-Driven Market Linkage & Smart Cataloging Mobile Application for Marginalized Artisans
+[![Flutter Version](https://img.shields.io/badge/Flutter-v3.3.0%2B-02569B?logo=flutter)](https://flutter.dev)
+[![Dart Version](https://img.shields.io/badge/Dart-v3.3.0%2B-0175C2?logo=dart)](https://dart.dev)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Hackathon](https://img.shields.io/badge/Smart%20India%20Hackathon-SIH26090-orange)](https://sih.gov.in)
 
-This project is developed for **Smart India Hackathon 2026 – SIH26090**.
-
-The main goal is to help marginalized artisans **digitize their products, create smart catalogs using AI, and connect with buyers through an online marketplace**.
-
----
-
-## 🎯 Main Goals
-
-* Help artisans create digital product catalogs.
-* Use AI to identify and classify products.
-* Generate useful product information using AI.
-* Help artisans reach more customers.
-* Provide a marketplace for buyers.
-* Store artisan and product information securely.
-* Connect all modules into one complete application.
+**Artisan Connect** is a competition-ready, artisan-first mobile application built for **Smart India Hackathon (SIH26090)**. It solves the critical market linkage and digital cataloging challenges faced by rural and marginalized Indian artisans through AI-assisted product onboarding and direct buyer access.
 
 ---
 
-# 👥 Team Modules
+## 🌟 Key Features
 
-The project is divided into 6 modules.
+### 🛠️ For Artisans (Seller Hub)
+- **Artisan Dashboard**: Key business metrics (Total Products, Active Orders, Revenue/Sales), quick action shortcuts, and real-time inventory stock management.
+- **🤖 AI Smart Cataloging**: Computer vision simulation that analyzes product photos to automatically detect categories, generate craft tags, estimate fair market pricing, and draft storytelling descriptions.
+- **📸 Guided Add Product Flow**: 5-step intuitive product wizard (Photo Upload $\rightarrow$ AI Auto-Fill $\rightarrow$ Review & Edit $\rightarrow$ Stock & Price Tagging $\rightarrow$ Publish).
+- **Inventory Stock Badges**: Real-time stock status (`In Stock`, `Low Stock`) with quick catalog edit options.
 
-### M1 – Flutter Artisan App
+### 🛍️ For Buyers (Marketplace)
+- **20 Craft Categories**: Home Decor, Handicrafts, Textiles, Jewellery, Paintings, Pottery, Wooden Crafts, Bamboo Products, Metal Crafts, Stone Crafts, Leather Goods, and more.
+- **200+ Handcrafted Products**: Authentic items sourced directly from rural craft clusters across India (Thanjavur, Jaipur, Kanchipuram, Madurai, Varanasi, Mysuru).
+- **Complete Shopping Experience**:
+  - Live product search & category filtering.
+  - Interactive shopping cart with subtotal & shipping calculation.
+  - Multi-step checkout, payment gateway simulation, and order review.
+  - Real-time order history & package tracking flow.
+- **Trust & Verification Badges**: Direct Artisan Support Guarantee on product details.
 
-Responsible for the **artisan mobile application**.
-
-Main features:
-
-* Artisan registration and login
-* Artisan profile
-* Dashboard
-* Add product
-* Upload product image
-* Edit product
-* Delete product
-* View products
-* AI-assisted catalog creation
-
-**Technology:** Flutter + Dart
-
----
-
-### M2 – Backend / API
-
-Responsible for the **server and APIs**.
-
-Main responsibilities:
-
-* Authentication
-* User management
-* Artisan APIs
-* Product APIs
-* Buyer APIs
-* Order APIs
-* AI integration
-* Data validation
-* Business logic
-
-**Technology:** Node.js + Express.js
+### 🔄 Dual Role Mode Switcher
+- Instantly switch between **Artisan Seller Mode** and **Buyer Customer Mode** from the Login screen, App Drawer, or Profile Settings to demonstrate end-to-end workflows during hackathon judging.
 
 ---
 
-### M3 – AI / ML
+## 🎨 Design System
 
-Responsible for the **AI features**.
+Built using a curated, authentic handicraft-inspired color palette:
 
-Main features:
-
-* Product image analysis
-* Product classification
-* Product category prediction
-* Product description generation
-* Product keywords/tags
-* Smart catalog generation
-* Recommendation support
-
-**Technology:** Python + AI/ML models
+| Element | Color Code | Description |
+| :--- | :--- | :--- |
+| **Primary** | `#0D5C3A` | Deep Forest Emerald |
+| **Secondary** | `#C85A32` | Warm Terracotta |
+| **Accent** | `#D99B26` | Ochre Gold |
+| **Background** | `#F9F8F6` | Warm Ivory |
+| **Surface** | `#FFFFFF` | Pure White |
 
 ---
 
-### M4 – Database
-
-Responsible for **database design and management**.
-
-Main data:
-
-* Users
-* Artisans
-* Buyers
-* Products
-* Categories
-* Orders
-* Reviews
-* AI-generated product information
-
-**Technology:** MongoDB / MongoDB Atlas
-
----
-
-### M5 – Buyer Marketplace
-
-Responsible for the **buyer-facing marketplace**.
-
-Main features:
-
-* Buyer registration and login
-* Browse products
-* Search products
-* Product categories
-* Product details
-* View artisan information
-* Shopping cart
-* Place orders
-* Order history
-* Reviews
-
-**Technology:** React + Vite
-
----
-
-### M6 – Integration & Testing
-
-Responsible for making sure **all modules work together**.
-
-Responsibilities:
-
-* Frontend and backend integration
-* API testing
-* AI integration testing
-* Database testing
-* End-to-end testing
-* Bug tracking
-* Final testing
-* Deployment support
-
----
-
-# 📁 Repository Structure
+## 📁 Project Structure
 
 ```text
-SIH26090-Artisan-Marketplace/
-│
-├── M1_Artisan_App/
-│
-├── M2_Backend/
-│
-├── M3_AI_ML/
-│
-├── M4_Database/
-│
-├── M5_Buyer_Marketplace/
-│
-├── M6_Integration_Testing/
-│
-├── docs/
-│   ├── API.md
-│   ├── DATABASE.md
-│   ├── AI.md
-│   └── SETUP.md
-│
-├── .gitignore
-└── README.md
-```
-
-Each team member should mainly work inside their **assigned module folder**.
-
----
-
-# 🔄 How the Application Works
-
-The basic application flow is:
-
-```text
-Artisan
-   ↓
-Flutter App
-   ↓
-Backend API
-   ↓
-AI Processing
-   ↓
-Database
-   ↓
-Product Catalog
-   ↓
-Buyer Marketplace
-   ↓
-Buyer
-```
-
-### Example
-
-An artisan uploads a picture of a handmade product.
-
-```text
-Product Image
-      ↓
-      AI
-      ↓
-Product Classification
-      ↓
-Category + Description + Tags
-      ↓
-Backend
-      ↓
-Database
-      ↓
-Marketplace
-```
-
-The buyer can then view the product on the marketplace.
-
----
-
-# 🔗 Module Communication
-
-The modules should communicate through the **Backend API**.
-
-```text
-Flutter App ──────┐
-                  │
-Buyer Marketplace ├──→ Backend API ──→ MongoDB
-                  │
-AI/ML ────────────┘
-```
-
-The frontend should **not directly connect to MongoDB**.
-
-The normal flow should be:
-
-```text
-Frontend
-   ↓
-Backend API
-   ↓
-Database / AI
-   ↓
-Backend Response
-   ↓
-Frontend
+lib/
+├── controllers/
+│   ├── artisan_controller.dart     # Manages artisan products, role state, and stats
+│   └── cart_controller.dart        # Manages cart items, quantities, subtotal & shipping
+├── data/
+│   └── catalog.dart                # Categories, product names, image pools & mock catalog
+├── models/
+│   └── product.dart                # Product data model with stock & copyWith support
+├── screens/
+│   ├── splash_screen.dart          # Branding & animated splash
+│   ├── login_screen.dart           # Role selector (Artisan/Buyer) & auth
+│   ├── register_screen.dart        # Craft specialization & user registration
+│   ├── main_shell.dart             # Responsive tab navigation & app bar delegate
+│   ├── artisan_dashboard_screen.dart # Artisan stats, quick actions & inventory
+│   ├── add_product_screen.dart     # Guided 5-step product creation wizard
+│   ├── ai_cataloging_screen.dart   # Vision AI analysis simulation & catalog suggestion
+│   ├── home_screen.dart            # Buyer marketplace homepage
+│   ├── category_screen.dart        # Category grid & filters
+│   ├── product_listing_screen.dart # Product catalog with stock badges
+│   ├── product_details_screen.dart # Image hero, artisan story badge & buy actions
+│   ├── cart_screen.dart            # Cart item management
+│   ├── checkout_screen.dart        # Shipping address form
+│   ├── payment_screen.dart         # Payment method selection
+│   ├── order_review_screen.dart    # Order summary before placing
+│   ├── order_success_screen.dart   # Order confirmation screen
+│   ├── orders_screen.dart          # Order history listing
+│   ├── tracking_screen.dart        # Live delivery status tracker
+│   └── profile_screen.dart         # Editable profile sheet & role toggle
+├── theme/
+│   └── app_theme.dart              # Theme tokens, Material 3 styles & input decorations
+└── widgets/
+    ├── app_bottom_nav.dart         # Dynamic role-adaptive bottom navigation
+    ├── app_drawer.dart             # Side menu drawer
+    ├── custom_button.dart          # Primary, secondary, outline & text buttons
+    ├── custom_text_field.dart      # Standardized input fields with validation
+    ├── section_title.dart          # Header component with optional action link
+    ├── loading_view.dart           # Animated loading indicator
+    ├── empty_state.dart            # Empty state illustration & retry button
+    ├── error_state.dart            # Network & loading error display widget
+    ├── product_card.dart           # Responsive card with AspectRatio image wrapper
+    ├── price_rating.dart           # Star rating & price formatter
+    └── product_image.dart          # Cached remote image with fallback placeholder
 ```
 
 ---
 
-# 📋 Common Product Data
+## 🚀 Getting Started
 
-All team members should use the same field names.
+### Prerequisites
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (`>= 3.3.0`)
+- [Dart SDK](https://dart.dev/get-started) (`>= 3.3.0`)
+- VS Code or Android Studio
 
-Example:
+### Installation & Run
 
-```json
-{
-  "productId": "P001",
-  "artisanId": "A001",
-  "name": "Handmade Basket",
-  "description": "Traditional handmade basket",
-  "category": "Handicrafts",
-  "price": 500,
-  "images": [],
-  "tags": ["handmade", "traditional", "basket"],
-  "stock": 10
-}
-```
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/artisan_connect.git
+   cd artisan_connect
+   ```
 
-Do not use different names for the same field.
+2. **Install dependencies**:
+   ```bash
+   flutter pub get
+   ```
 
-For example, choose **`productId`** and use it everywhere.
+3. **Verify codebase health**:
+   ```bash
+   flutter analyze
+   ```
 
----
-
-# 📚 Documentation
-
-The `docs` folder contains important project information.
-
-### API.md
-
-Contains:
-
-* API endpoints
-* Request format
-* Response format
-* Authentication details
-
-### DATABASE.md
-
-Contains:
-
-* Collections
-* Fields
-* Data types
-* Database structure
-
-### AI.md
-
-Contains:
-
-* AI features
-* AI input
-* AI output
-* Model/API information
-
-### SETUP.md
-
-Contains:
-
-* Installation steps
-* Required software
-* Environment variables
-* How to run the project
+4. **Run the application**:
+   ```bash
+   flutter run
+   ```
 
 ---
 
-# 🌿 Git Branch Rules
+## 🧪 Free-Tier & Local Demo Notes
 
-The `main` branch is the **stable branch**.
-
-Each member should create their own branch.
-
-Example:
-
-```text
-main
- ├── yeswanth
- ├── member2
- ├── member3
- ├── member4
- ├── member5
- └── member6
-```
-
-### Important
-
-**Do not directly work on `main`.**
+- **Zero Paid Dependencies**: Uses pure Flutter SDK built-in widgets and standard packages. No paid cloud APIs or paid UI libraries required.
+- **Offline & Demo Ready**: All state modifications (adding products, AI Smart Cataloging simulations, editing catalog details, shopping cart operations) run in memory via reactive controllers.
 
 ---
 
-# 🔧 Git Workflow
+## 📄 License
 
-### 1. Get latest code
-
-```bash
-git checkout main
-git pull
-```
-
-### 2. Create your branch
-
-```bash
-git checkout -b your-name
-```
-
-Example:
-
-```bash
-git checkout -b yeswanth
-```
-
-### 3. Work on your module
-
-Make your changes inside your assigned folder.
-
-### 4. Check changes
-
-```bash
-git status
-```
-
-### 5. Add changes
-
-```bash
-git add .
-```
-
-### 6. Commit
-
-```bash
-git commit -m "Add module changes"
-```
-
-### 7. Push
-
-```bash
-git push -u origin your-name
-```
-
-### 8. Create Pull Request
-
-On GitHub:
-
-```text
-Your Branch → main
-```
-
-Create a Pull Request.
-
-### 9. Review
-
-The team lead/member reviews the changes.
-
-### 10. Merge
-
-After approval, merge the Pull Request into `main`.
-
----
-
-# ⚠️ Git Rules
-
-### ✅ Do
-
-* Work on your own branch.
-* Work mainly inside your assigned folder.
-* Pull the latest code before starting new work.
-* Commit your changes regularly.
-* Use clear commit messages.
-* Test your code before creating a Pull Request.
-* Inform the team about important changes.
-
-### ❌ Don't
-
-* Don't directly push to `main`.
-* Don't delete another member's work.
-* Don't modify another module without informing the owner.
-* Don't commit passwords or API keys.
-* Don't commit `.env` files.
-* Don't merge untested code.
-
----
-
-# 🔐 Environment Variables
-
-Never upload passwords, API keys, or database credentials to GitHub.
-
-Example:
-
-```text
-MONGODB_URI=
-JWT_SECRET=
-AI_API_KEY=
-```
-
-Use a local `.env` file.
-
-Add this to `.gitignore`:
-
-```text
-.env
-node_modules/
-dist/
-build/
-```
-
----
-
-# 🧪 Testing
-
-Each module must be tested before integration.
-
-### M1
-
-* Registration
-* Login
-* Add product
-* Upload image
-* View product
-
-### M2
-
-* Authentication APIs
-* Product APIs
-* User APIs
-* Error handling
-
-### M3
-
-* Image processing
-* Product classification
-* Description generation
-* AI response
-
-### M4
-
-* Database connection
-* Create data
-* Read data
-* Update data
-* Delete data
-
-### M5
-
-* Product browsing
-* Search
-* Product details
-* Cart
-* Orders
-
-### M6
-
-* API integration
-* Frontend integration
-* AI integration
-* Complete application testing
-
----
-
-# 🚀 MVP Development Flow
-
-The first working version should focus on this flow:
-
-```text
-Artisan Registration
-        ↓
-Add Product
-        ↓
-Upload Product Image
-        ↓
-AI Smart Cataloging
-        ↓
-Save Product
-        ↓
-Product Appears in Marketplace
-        ↓
-Buyer Views Product
-        ↓
-Buyer Places Order
-```
-
-First make this basic flow work.
-
-After that, add advanced features.
-
----
-
-# 🛠️ Technology Stack
-
-| Part              | Technology           |
-| ----------------- | -------------------- |
-| Artisan App       | Flutter / Dart       |
-| Buyer Marketplace | React / Vite         |
-| Backend           | Node.js / Express.js |
-| Database          | MongoDB              |
-| AI/ML             | Python / AI Models   |
-| API               | REST API             |
-| Authentication    | JWT                  |
-| Version Control   | Git / GitHub         |
-| API Testing       | Postman              |
-
----
-
-# 📌 Development Rules for the Team
-
-1. **Understand your task before coding.**
-2. **Work only on your assigned module.**
-3. **Keep the common data structure unchanged.**
-4. **Communicate API changes with the team.**
-5. **Test your module before pushing.**
-6. **Create a Pull Request for integration.**
-7. **Do not break existing functionality.**
-8. **Keep the code clean and organized.**
-
----
-
-# 🎯 Final Project Goal
-
-The final application should allow:
-
-**Artisan → Create Product → AI Smart Catalog → Store Product → Marketplace → Buyer → Order**
-
-The goal is to build a **working, integrated MVP** rather than developing six separate projects.
-
----
-
-## 🏆 SIH26090
-
-**Project:** AI-Driven Market Linkage & Smart Cataloging Mobile Application for Marginalized Artisans
-
-**Objective:** Use technology and AI to help artisans digitize their products, improve market access, and connect with buyers.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
