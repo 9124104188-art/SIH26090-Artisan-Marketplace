@@ -1,0 +1,17 @@
+material_cost,labour_hours,hourly_rate,labour_cost,overhead,margin_percent,craft_complexity,price
+0,0,0,0,0,20,simple,420
+100,4,40,0,25,15,simple,450
+180,6,45,0,40,20,medium,720
+250,8,50,0,60,20,medium,1050
+300,12,30,0,50,20,medium,980
+350,10,55,0,75,25,complex,1500
+450,14,60,0,90,25,complex,2200
+500,16,70,0,120,30,high_mastery,3300
+650,20,65,0,150,25,high_mastery,3900
+800,24,80,0,200,30,high_mastery,5600
+120,0,0,300,30,20,simple,540
+250,0,0,500,50,20,medium,950
+400,0,0,700,80,25,complex,1700
+75,3,35,0,20,10,simple,330
+275,7,48,0,45,18,medium,920
+575,18,75,0,130,28,high_mastery,4300
