@@ -22,8 +22,8 @@ app.use(cors({
     if (
       !origin ||
       configuredOrigins.includes(origin) ||
-      (process.env.NODE_ENV === "development" &&
-        (/^http:\/\/localhost:\d+$/.test(origin) || /^http:\/\/127\.0\.0\.1:\d+$/.test(origin)))
+      /^http:\/\/localhost:\d+$/.test(origin) ||
+      /^http:\/\/127\.0\.0\.1:\d+$/.test(origin)
     ) {
       return callback(null, true);
     }
