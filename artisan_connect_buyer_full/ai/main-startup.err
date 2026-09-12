@@ -1,9 +1,0 @@
-INFO:     Will watch for changes in these directories: ['C:\\Users\\vaidh\\Documents\\GitHub\\SIH26090-Artisan-Marketplace\\artisan_connect_buyer_full\\ai']
-INFO:     Uvicorn running on http://0.0.0.0:18081 (Press CTRL+C to quit)
-INFO:     Started reloader process [2028] using WatchFiles
-INFO:watchfiles.main:3 changes detected
-INFO:watchfiles.main:2 changes detected
-INFO:watchfiles.main:22 changes detected
-INFO:watchfiles.main:14 changes detected
-INFO:watchfiles.main:19 changes detected
-INFO:watchfiles.main:5 changes detected
