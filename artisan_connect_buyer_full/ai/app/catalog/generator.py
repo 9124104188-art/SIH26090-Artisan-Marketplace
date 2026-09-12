@@ -251,6 +251,17 @@ def _call_llm_catalog_generator(
 
     prompt = f"""Create a product catalog entry for this artisan product.
 Return only JSON matching the requested schema.
+
+Evidence rules:
+- Use only facts explicitly present in the product description, artisan context, or attached image.
+- Do not invent materials, dimensions, colors, patterns, origin, techniques, quality claims, certifications, or uses.
+- If a detail is not supported, omit it rather than guessing.
+
+Description rules:
+- Write a detailed, natural, customer-friendly description of 100 to 150 words.
+- Cover the product, supported materials, craftsmanship, design, and practical or decorative uses when those details are supported by the evidence.
+- Avoid repetition, empty adjectives, generic filler, and claims that are not evidence-based.
+
 Product description: {raw_input}
 Category hint: {category_hint or 'none'}
 """

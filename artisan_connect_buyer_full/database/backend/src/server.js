@@ -15,15 +15,15 @@ const aiRoutes = require("./routes/ai");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS — allow the configured frontend URL and localhost development origins.
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+const configuredOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || "")
+  .split(",").map((origin) => origin.trim()).filter(Boolean);
 app.use(cors({
   origin: (origin, callback) => {
     if (
       !origin ||
-      origin === allowedOrigin ||
-      /^http:\/\/localhost:\d+$/.test(origin) ||
-      /^http:\/\/127\.0\.0\.1:\d+$/.test(origin)
+      configuredOrigins.includes(origin) ||
+      (process.env.NODE_ENV === "development" &&
+        (/^http:\/\/localhost:\d+$/.test(origin) || /^http:\/\/127\.0\.0\.1:\d+$/.test(origin)))
     ) {
       return callback(null, true);
     }

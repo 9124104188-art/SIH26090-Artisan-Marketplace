@@ -1,16 +1,11 @@
 const express = require("express");
 const axios = require("axios");
-const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
 const multer = require("multer");
 const FormData = require("form-data");
 const { authenticate } = require("../middleware/auth");
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 12 * 1024 * 1024 } });
-const uploadsDir = path.join(__dirname, "../../uploads");
-
 const handleUpload = (field) => (req, res, next) => {
   upload.single(field)(req, res, (error) => {
     if (!error) return next();
@@ -21,7 +16,12 @@ const handleUpload = (field) => (req, res, next) => {
   });
 };
 
-const AI_BASE = () => (process.env.AI_SERVICE_URL || "http://localhost:8000").replace(/\/$/, "");
+const AI_BASE = () => {
+  const configuredUrl = process.env.AI_SERVICE_URL;
+  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
+  if (process.env.NODE_ENV === "development") return "http://localhost:8000";
+  throw new Error("AI_SERVICE_URL is required outside development.");
+};
 
 /**
  * Generic proxy: forwards request body to the FastAPI AI service,
@@ -46,26 +46,34 @@ const proxyToAI = async (req, res, aiPath) => {
 // All AI endpoints require authentication
 router.use(authenticate);
 
-// POST /api/ai/image/process — authenticated original image upload
+// POST /api/ai/image/process — authenticated image-processing proxy
 router.post("/image/process", handleUpload("file"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: "Missing image file in request." });
   }
   try {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-    const extension = path.extname(req.file.originalname).toLowerCase() || ".bin";
-    const filename = `original_${crypto.randomBytes(8).toString("hex")}${extension}`;
-    fs.writeFileSync(path.join(uploadsDir, filename), req.file.buffer);
-    return res.status(200).json({
-      success: true,
-      data: {
-        imageUrl: `/uploads/${filename}`,
-        originalName: req.file.originalname,
-        enhanced: false,
-        bgRemoved: false
-      }
+    const form = new FormData();
+    form.append("file", req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype || "application/octet-stream"
     });
+    form.append("removeBg", req.body.removeBg === "false" ? "false" : "true");
+    const response = await axios.post(`${AI_BASE()}/ai/image/process`, form, {
+      headers: form.getHeaders(),
+      timeout: 180000,
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity
+    });
+    const data = response.data && response.data.data;
+    if (data && typeof data.imageUrl === "string" && data.imageUrl.startsWith("/")) {
+      data.imageUrl = `${AI_BASE()}${data.imageUrl}`;
+    }
+    return res.status(response.status).json(response.data);
   } catch (err) {
+    if (err.response) return res.status(err.response.status).json(err.response.data);
+    if (err.message === "AI_SERVICE_URL is required outside development.") {
+      return res.status(503).json({ success: false, message: "AI service is not configured." });
+    }
     return res.status(500).json({ success: false, message: "Unable to save the uploaded image." });
   }
 });

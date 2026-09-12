@@ -8,6 +8,22 @@ const { authenticate, requireRole } = require("../middleware/auth");
 const router = express.Router();
 const uploadsDir = path.resolve(__dirname, "../../uploads");
 
+const publicImageUrl = (image, request) => {
+  if (typeof image !== "string") return image;
+  try {
+    const parsed = new URL(image, `${request.protocol}://${request.get("host")}`);
+    if (!/^https?:$/.test(parsed.protocol)) return image;
+    if (["localhost", "127.0.0.1"].includes(parsed.hostname)) {
+      const aiBase = process.env.AI_SERVICE_URL;
+      if (parsed.port === "8000" && aiBase) return `${aiBase.replace(/\/$/, "")}${parsed.pathname}${parsed.search}`;
+      return `${request.protocol}://${request.get("host")}${parsed.pathname}${parsed.search}`;
+    }
+    return image;
+  } catch {
+    return image;
+  }
+};
+
 const removeUploadedImages = (images = []) => {
   for (const image of images) {
     if (typeof image !== "string") continue;
@@ -51,7 +67,12 @@ router.get("/", async (req, res) => {
       .skip(Number(skip))
       .limit(Number(limit));
 
-    return res.json({ success: true, data: products });
+    const result = products.map((product) => {
+      const json = product.toObject();
+      json.images = (json.images || []).map((image) => publicImageUrl(image, req));
+      return json;
+    });
+    return res.json({ success: true, data: result });
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });
   }
@@ -62,7 +83,9 @@ router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("artisanId", "craftType location userId");
     if (!product) return res.status(404).json({ success: false, message: "Product not found." });
-    return res.json({ success: true, data: product });
+    const result = product.toObject();
+    result.images = (result.images || []).map((image) => publicImageUrl(image, req));
+    return res.json({ success: true, data: result });
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });
   }
