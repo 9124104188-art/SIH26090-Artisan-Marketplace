@@ -4,8 +4,14 @@ from PIL import Image
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.image import enhancer
 
 client = TestClient(app)
+
+def _fake_cloudinary_upload(file, **kwargs):
+    return {
+        "secure_url": "https://res.cloudinary.com/test-cloud/image/upload/test.jpg"
+    }
 
 def test_health_check():
     response = client.get("/health")
@@ -147,7 +153,11 @@ def test_recommendations_require_products():
     assert response.status_code == 400
     assert response.json()["success"] is False
 
-def test_image_process_without_background_removal():
+def test_image_process_without_background_removal(monkeypatch):
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_CLOUD_NAME", "test-cloud")
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_KEY", "test-key")
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_SECRET", "test-secret")
+    monkeypatch.setattr(enhancer.uploader, "upload", _fake_cloudinary_upload)
     # Create a small in-memory dummy image
     img = Image.new("RGB", (200, 200), color=(255, 100, 100))
     img_bytes = io.BytesIO()
@@ -162,11 +172,13 @@ def test_image_process_without_background_removal():
     assert "imageUrl" in res["data"]
     assert res["data"]["enhanced"] is False
     assert res["data"]["bgRemoved"] is False
-    stored = client.get(res["data"]["imageUrl"])
-    assert stored.status_code == 200
-    assert stored.content == img_bytes.getvalue()
+    assert res["data"]["imageUrl"].startswith("https://res.cloudinary.com/")
 
-def test_image_process_succeeds_without_background_removal_service():
+def test_image_process_succeeds_without_background_removal_service(monkeypatch):
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_CLOUD_NAME", "test-cloud")
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_KEY", "test-key")
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_SECRET", "test-secret")
+    monkeypatch.setattr(enhancer.uploader, "upload", _fake_cloudinary_upload)
     image = Image.new("RGB", (20, 20), color=(255, 100, 100))
     image_bytes = io.BytesIO()
     image.save(image_bytes, format="JPEG")
@@ -174,8 +186,9 @@ def test_image_process_succeeds_without_background_removal_service():
     files = {"file": ("test_pot.jpg", image_bytes, "image/jpeg")}
     response = client.post("/ai/image/process", files=files, data={"removeBg": "true"})
     assert response.status_code == 200
-    assert response.json()["data"]["enhanced"] is False
-    assert response.json()["data"]["bgRemoved"] is False
+    assert response.json()["data"]["enhanced"] is True
+    assert response.json()["data"]["bgRemoved"] is True
+    assert response.json()["data"]["imageUrl"].startswith("https://res.cloudinary.com/")
 
 def test_voice_transcribe(monkeypatch):
     monkeypatch.setattr(
