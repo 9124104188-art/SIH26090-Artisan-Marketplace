@@ -4,16 +4,9 @@ import shutil
 from io import BytesIO
 from pathlib import Path
 from typing import Dict, Any
-import cloudinary
-from cloudinary import uploader
 
 from app import config
 from app.config import UPLOADS_DIR
-
-try:
-    from rembg import remove as remove_background_image
-except ImportError:
-    remove_background_image = None
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +16,15 @@ def process_and_enhance_image(
     remove_background: bool = True
 ) -> Dict[str, Any]:
     """Process the uploaded image and return its public URL."""
+    # Lazy imports: rembg (ONNX) and Cloudinary SDK are heavy and only needed
+    # when an image is actually processed, not during FastAPI startup.
+    try:
+        from rembg import remove as remove_background_image
+    except ImportError:
+        remove_background_image = None
+    import cloudinary
+    from cloudinary import uploader
+
     try:
         UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
         suffix = Path(input_path).suffix or ".bin"

@@ -4,10 +4,6 @@ import logging
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
 from urllib.parse import urlparse
-import httpx
-from google import genai
-from google.genai import errors as genai_errors
-from google.genai import types
 
 from app.config import (
     ALLOWED_CATEGORIES,
@@ -243,6 +239,13 @@ def _call_llm_catalog_generator(
     image_url: str = None,
 ) -> Dict[str, Any]:
     """Generate and validate catalog data using the server-side Gemini client."""
+    # Lazy imports: google-genai and httpx are heavy and only needed when the
+    # Gemini provider is actually used, not during FastAPI startup.
+    import httpx
+    from google import genai
+    from google.genai import errors as genai_errors
+    from google.genai import types
+
     if not LLM_API_KEY or LLM_API_KEY == "YOUR_GEMINI_API_KEY":
         raise CatalogProviderError(
             "Gemini is enabled but LLM_API_KEY is missing.",

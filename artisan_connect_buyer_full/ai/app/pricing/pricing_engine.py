@@ -5,10 +5,6 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict
 
-import joblib
-import numpy as np
-from sklearn.ensemble import RandomForestRegressor
-
 logger = logging.getLogger(__name__)
 
 COMPLEXITY_MULTIPLIERS = {
@@ -43,7 +39,11 @@ def _feature_row(
     ]
 
 
-def _train_model() -> RandomForestRegressor:
+def _train_model() -> Any:
+    # Lazy import: scikit-learn is heavy and only needed when training/predicting.
+    from sklearn.ensemble import RandomForestRegressor
+    import joblib
+
     if not DATASET_PATH.is_file():
         raise RuntimeError(f"Pricing training dataset is missing: {DATASET_PATH}")
 
@@ -82,7 +82,11 @@ def _train_model() -> RandomForestRegressor:
 
 
 @lru_cache(maxsize=1)
-def _load_model() -> RandomForestRegressor:
+def _load_model() -> Any:
+    # Lazy import: joblib/sklearn are heavy and only needed when loading/predicting.
+    import joblib
+    from sklearn.ensemble import RandomForestRegressor
+
     if MODEL_PATH.is_file():
         try:
             model = joblib.load(MODEL_PATH)
@@ -143,6 +147,9 @@ def calculate_smart_price(
         labour_cost,
         float(material_cost) + labour_cost + float(overhead),
     )
+    # Lazy import: numpy is heavy and only needed for prediction math.
+    import numpy as np
+
     model = _load_model()
     tree_predictions = np.array([tree.predict([row])[0] for tree in model.estimators_])
     predicted_price = max(0, int(round(model.predict([row])[0])))

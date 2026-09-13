@@ -157,7 +157,7 @@ def test_image_process_without_background_removal(monkeypatch):
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_CLOUD_NAME", "test-cloud")
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_KEY", "test-key")
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_SECRET", "test-secret")
-    monkeypatch.setattr(enhancer.uploader, "upload", _fake_cloudinary_upload)
+    monkeypatch.setattr("cloudinary.uploader.upload", _fake_cloudinary_upload)
     # Create a small in-memory dummy image
     img = Image.new("RGB", (200, 200), color=(255, 100, 100))
     img_bytes = io.BytesIO()
@@ -178,7 +178,7 @@ def test_image_process_succeeds_without_background_removal_service(monkeypatch):
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_CLOUD_NAME", "test-cloud")
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_KEY", "test-key")
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_SECRET", "test-secret")
-    monkeypatch.setattr(enhancer.uploader, "upload", _fake_cloudinary_upload)
+    monkeypatch.setattr("cloudinary.uploader.upload", _fake_cloudinary_upload)
     image = Image.new("RGB", (20, 20), color=(255, 100, 100))
     image_bytes = io.BytesIO()
     image.save(image_bytes, format="JPEG")
