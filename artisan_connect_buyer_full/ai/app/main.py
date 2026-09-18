@@ -7,6 +7,7 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.concurrency import run_in_threadpool
 
 from app.config import UPLOADS_DIR, PORT, HOST
 from app.schemas import (
@@ -145,7 +146,8 @@ async def process_image(
         if os.path.getsize(temp_filepath) == 0:
             raise HTTPException(status_code=400, detail="Uploaded image file is empty")
 
-        result = process_and_enhance_image(
+        result = await run_in_threadpool(
+            process_and_enhance_image,
             input_path=temp_filepath,
             remove_background=removeBg
         )

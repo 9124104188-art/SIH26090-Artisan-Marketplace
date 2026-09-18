@@ -19,6 +19,8 @@ CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME", "")
 CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY", "")
 CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET", "")
 
+ENABLE_BG_REMOVAL = os.getenv("ENABLE_BG_REMOVAL", "false").strip().lower() in ("true", "1", "yes")
+
 # Directory paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 UPLOADS_DIR = BASE_DIR / "uploads"

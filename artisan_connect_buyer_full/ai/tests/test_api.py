@@ -170,25 +170,83 @@ def test_image_process_without_background_removal(monkeypatch):
     res = response.json()
     assert res["success"] is True
     assert "imageUrl" in res["data"]
-    assert res["data"]["enhanced"] is False
+    assert res["data"]["enhanced"] is True
     assert res["data"]["bgRemoved"] is False
+    assert res["data"]["width"] == 200
+    assert res["data"]["height"] == 200
     assert res["data"]["imageUrl"].startswith("https://res.cloudinary.com/")
 
-def test_image_process_succeeds_without_background_removal_service(monkeypatch):
+def test_image_process_bg_removal_disabled_by_default(monkeypatch):
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_CLOUD_NAME", "test-cloud")
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_KEY", "test-key")
     monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_SECRET", "test-secret")
+    monkeypatch.setattr(enhancer.config, "ENABLE_BG_REMOVAL", False)
     monkeypatch.setattr("cloudinary.uploader.upload", _fake_cloudinary_upload)
-    image = Image.new("RGB", (20, 20), color=(255, 100, 100))
+    image = Image.new("RGB", (200, 200), color=(255, 100, 100))
     image_bytes = io.BytesIO()
     image.save(image_bytes, format="JPEG")
     image_bytes.seek(0)
     files = {"file": ("test_pot.jpg", image_bytes, "image/jpeg")}
     response = client.post("/ai/image/process", files=files, data={"removeBg": "true"})
     assert response.status_code == 200
-    assert response.json()["data"]["enhanced"] is True
-    assert response.json()["data"]["bgRemoved"] is True
-    assert response.json()["data"]["imageUrl"].startswith("https://res.cloudinary.com/")
+    res = response.json()
+    assert res["data"]["enhanced"] is True
+    assert res["data"]["bgRemoved"] is False
+    assert res["data"]["imageUrl"].startswith("https://res.cloudinary.com/")
+
+def test_image_process_resizes_large_images_to_max_1024(monkeypatch):
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_CLOUD_NAME", "test-cloud")
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_KEY", "test-key")
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_SECRET", "test-secret")
+    uploaded_dimensions = {}
+
+    def _capture_upload(file_stream, **kwargs):
+        uploaded_img = Image.open(file_stream)
+        uploaded_dimensions["size"] = uploaded_img.size
+        return {"secure_url": "https://res.cloudinary.com/test-cloud/image/upload/resized.jpg"}
+
+    monkeypatch.setattr("cloudinary.uploader.upload", _capture_upload)
+    # Create 2000x1000 image
+    image = Image.new("RGB", (2000, 1000), color=(100, 150, 200))
+    image_bytes = io.BytesIO()
+    image.save(image_bytes, format="JPEG")
+    image_bytes.seek(0)
+    files = {"file": ("large_craft.jpg", image_bytes, "image/jpeg")}
+    response = client.post("/ai/image/process", files=files, data={"removeBg": "false"})
+    assert response.status_code == 200
+    res = response.json()
+    assert res["success"] is True
+    assert res["data"]["width"] == 1024
+    assert res["data"]["height"] == 512
+    assert uploaded_dimensions["size"] == (1024, 512)
+
+def test_image_process_fallback_when_bg_removal_fails(monkeypatch):
+    import sys
+    import types
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_CLOUD_NAME", "test-cloud")
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_KEY", "test-key")
+    monkeypatch.setattr(enhancer.config, "CLOUDINARY_API_SECRET", "test-secret")
+    monkeypatch.setattr(enhancer.config, "ENABLE_BG_REMOVAL", True)
+    monkeypatch.setattr("cloudinary.uploader.upload", _fake_cloudinary_upload)
+
+    fake_rembg = types.ModuleType("rembg")
+    def _failing_remove(*args, **kwargs):
+        raise RuntimeError("ONNX model download or execution failed")
+    fake_rembg.remove = _failing_remove
+    monkeypatch.setitem(sys.modules, "rembg", fake_rembg)
+
+    image = Image.new("RGB", (300, 300), color=(255, 100, 100))
+    image_bytes = io.BytesIO()
+    image.save(image_bytes, format="JPEG")
+    image_bytes.seek(0)
+    files = {"file": ("test_pot.jpg", image_bytes, "image/jpeg")}
+    response = client.post("/ai/image/process", files=files, data={"removeBg": "true"})
+    assert response.status_code == 200
+    res = response.json()
+    assert res["success"] is True
+    assert res["data"]["enhanced"] is True
+    assert res["data"]["bgRemoved"] is False
+    assert res["data"]["imageUrl"].startswith("https://res.cloudinary.com/")
 
 def test_voice_transcribe(monkeypatch):
     monkeypatch.setattr(
